@@ -1,0 +1,890 @@
+/* Conway's Game of Diplomacy — GM adjudicator.
+   Nothing is painted over the board: the map has its own column with a fixed-height
+   control bar above it, the order panel is a sibling column, and the page footer owns a
+   strip along the bottom. */
+
+:root {
+  --ui-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  --mono: "SF Mono", Menlo, Consolas, monospace;
+  --card: rgba(24, 25, 28, 0.92);
+  --card-edge: rgba(255, 255, 255, 0.14);
+  --ink: #f2f0ec;
+  --ink-dim: #b4b0a7;
+  --accent: #ffb347;
+  --ok: #4ec97a;
+  --bad: #ff6b6b;
+  --info: #cfd6e4;
+  --shadow: 0 6px 26px rgba(0, 0, 0, 0.45);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: #101114;
+  color: var(--ink);
+  font-family: var(--ui-font);
+  overflow: hidden;
+}
+
+/* One focus treatment for everything keyboard-reachable. */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* The board is never covered: it and the order panel are flex siblings — side by side
+   when there's width for both, stacked (board on top) when there isn't. The footer owns
+   a strip along the bottom, so no chrome is ever painted over a province. */
+:root { --footer-h: 26px; }
+
+#app {
+  position: fixed;
+  inset: 0 0 var(--footer-h) 0;
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+}
+
+/* ---------- board ---------- */
+
+/* The map column: a control bar, then the map. Nothing floats over the board. */
+.board-col {
+  flex: 1 1 auto;
+  /* Never shrinks below a usable map width — the panel (above) gives up its own width
+     first, so this floor is what keeps the stacked breakpoint from being reached while
+     there's still width to spare. */
+  min-width: 360px;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.board-wrap {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+}
+
+.board-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  touch-action: none; /* the app drives pan/zoom itself on touch */
+}
+
+/* The hover highlight is painted into the `fill` by the board (see `paintFill`), not
+   applied here: WebKit computes `filter: brightness()` on an SVG child element but never
+   renders it, so a CSS-filter highlight is invisible in Safari. `fill` needs no filter and
+   is honoured everywhere — and the transition is on `fill` for the same reason. */
+.province {
+  cursor: pointer;
+  transition: fill 90ms ease;
+}
+.province.impassable { cursor: default; }
+/* Invisible fill under the tiles: catches clicks in the water a land province owns
+   (the Bosporus, the Danish belts), which is a hole in that province's own tile. */
+.province-hit { cursor: pointer; pointer-events: fill; }
+
+/* One tight bar above the map — never an overlay. Everything sits on a
+   single row at desktop widths and wraps only when it genuinely has to. */
+.topbar {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 6px 12px;
+  flex-wrap: nowrap;
+  height: 44px;
+  padding: 0 10px;
+  overflow: hidden;
+  background: rgba(20, 21, 25, 0.95);
+  border-bottom: 1px solid var(--card-edge);
+}
+
+/* Everything in the bar shrinks rather than overlapping: the row is fixed at 44px, so
+   the parts have to give way in order (title text, then the game name, then history). */
+.phase-header {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: baseline;
+  gap: 10px;
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+}
+.phase-header .phase-label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 0 1 auto;
+  min-width: 11.5em;
+}
+
+.phase-label {
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+.title-input {
+  background: transparent;
+  border: none;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
+  color: var(--ink-dim);
+  font: inherit;
+  font-size: 13px;
+  padding: 0;
+  flex: 0 1 13em;
+  min-width: 0;
+}
+.title-input:focus { border-bottom-color: var(--accent); color: var(--ink); }
+
+.toolbar {
+  display: flex;
+  gap: 5px;
+  flex-wrap: nowrap;
+  align-items: center;
+  margin-left: auto;
+  flex: 0 0 auto;
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+  color: var(--ink);
+  background: var(--card);
+  border: 1px solid var(--card-edge);
+  border-radius: 8px;
+  padding: 5px 10px;
+  box-shadow: var(--shadow);
+}
+button:hover { border-color: var(--accent); }
+button[disabled] { opacity: 0.35; cursor: default; }
+button[disabled]:hover { border-color: var(--card-edge); }
+button.ghost { background: transparent; box-shadow: none; border-color: transparent; color: var(--ink-dim); }
+button.ghost:hover { color: var(--ink); }
+button.small { font-size: 12.5px; padding: 3px 8px; }
+button.big { display: block; width: 100%; padding: 10px; font-size: 15px; margin-top: 6px; }
+
+.tool { font-size: 13px; }
+.tool.primary {
+  background: rgba(255, 179, 71, 0.16);
+  border-color: rgba(255, 179, 71, 0.55);
+  font-weight: 600;
+}
+.tool.on { background: var(--accent); color: #201800; font-weight: 700; border-color: var(--accent); }
+
+/* Undo / redo / scrubber read as one "History" control, not three loose glyphs. */
+.history-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 0 0 auto;
+  min-width: 0;
+  overflow: hidden;
+}
+.group-label {
+  font-size: 11px;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+}
+.tool.step { padding: 3px 9px; }
+/* Not enough width for the word: the slider and its arrows still work. */
+@media (max-width: 1180px) {
+  /* Shrink order: the game name goes first (it is in Games and on exports anyway),
+     then history's wording — the phase title is the last thing to give. */
+  .history-bar .group-label, .scrub-label { display: none; }
+  .topbar .title-input { display: none; }
+}
+@media (max-width: 1080px) {
+  .topbar .tool { padding: 5px 7px; font-size: 12.5px; }
+  .topbar { gap: 4px 8px; }
+}
+/* Fixed width on purpose: the phase names differ in length, and a control that resized
+   with the selection made the whole top bar jump every time you changed phase. */
+.scrub {
+  width: 168px;
+  flex: 0 0 168px;
+  font: inherit;
+  font-size: 12.5px;
+  padding: 4px 6px;
+  border-radius: 7px;
+  border: 1px solid var(--card-edge);
+  background: var(--card);
+  color: var(--ink);
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  text-overflow: ellipsis;
+}
+.scrub:hover { border-color: var(--accent); }
+.scrub-label { font-size: 12.5px; color: var(--ink-dim); width: 58px; flex: 0 0 58px; }
+
+.sandbox-banner {
+  background: rgba(255, 179, 71, 0.95);
+  color: #201800;
+  border-radius: 9px;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  box-shadow: var(--shadow);
+}
+.sandbox-banner .ghost { color: #4a3800; text-decoration: underline; }
+
+/* Toasts sit at the foot of the map, out of the way of the northern provinces, and are
+   neutral rather than the same red as a failed order. */
+.toast-host {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 34px;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 4;
+}
+.toast {
+  background: rgba(28, 32, 40, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: var(--info);
+  font-size: 13.5px;
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 7px 13px;
+  box-shadow: var(--shadow);
+  max-width: 46ch;
+  text-align: center;
+}
+
+/* ---------- order panel ---------- */
+
+.panel {
+  /* Shrinks before the layout stacks: a narrower window or a moderate page zoom takes
+     width from here first, down to a floor still wide enough for the order textarea and
+     tab chips, and only flips to the stacked layout below when that floor is reached. */
+  flex: 1 1 372px;
+  min-width: 300px;
+  max-width: 372px;
+  margin: 10px 10px 10px 0;
+  background: var(--card);
+  border: 1px solid var(--card-edge);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  padding: 9px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  overflow-y: auto;
+}
+
+.tabs { display: flex; flex-wrap: wrap; gap: 4px; }
+
+/* Neutral selected fill with a coloured edge + dot: the power colour never becomes the
+   text background, so Germany's black tab isn't black-on-black. */
+.tab {
+  --chip: #888;
+  position: relative;
+  font-size: 13px;
+  padding: 4px 9px;
+  border-radius: 20px;
+  box-shadow: none;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid transparent;
+  border-left: 4px solid var(--chip);
+  color: var(--ink-dim);
+}
+.tab.active {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.4);
+  border-left: 4px solid var(--chip);
+  color: #ffffff;
+  font-weight: 700;
+}
+.tab.active .tab-label::before {
+  content: "";
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--chip);
+  box-shadow: 0 0 0 1.5px rgba(255, 255, 255, 0.6);
+  margin-right: 5px;
+}
+
+.tab-errors {
+  margin-left: 5px;
+  background: var(--bad);
+  color: #260000;
+  font-weight: 700;
+  font-size: 11px;
+  border-radius: 9px;
+  padding: 0 5px;
+}
+
+.tab-pencil {
+  margin-left: 5px;
+  opacity: 0;
+  font-size: 12px;
+  transition: opacity 90ms ease;
+}
+.tab:hover .tab-pencil, .tab:focus-within .tab-pencil { opacity: 0.75; }
+/* Touch has no hover: the active tab always offers its rename affordance. */
+.tab.active .tab-pencil { opacity: 0.8; }
+.tab-pencil:hover { opacity: 1; }
+
+/* ---------- first run ---------- */
+
+.intro-card {
+  background: rgba(255, 179, 71, 0.1);
+  border: 1px solid rgba(255, 179, 71, 0.4);
+  border-radius: 9px;
+  padding: 8px 10px;
+}
+.intro-head { font-size: 13.5px; font-weight: 700; }
+.intro-steps {
+  margin: 6px 0 4px;
+  padding-left: 18px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--ink-dim);
+}
+.intro-steps li::marker { color: var(--accent); }
+.intro-sub {
+  margin: 2px 0 4px;
+  padding-left: 16px;
+  list-style: none;
+}
+.intro-sub li { position: relative; }
+.intro-sub li::before {
+  content: '–';
+  position: absolute;
+  left: -12px;
+  color: var(--accent);
+}
+.intro-also { margin-top: 2px; padding-left: 18px; }
+
+/* ---------- adjustment bookkeeping ---------- */
+
+.counts {
+  background: rgba(0, 0, 0, 0.28);
+  border: 1px solid var(--card-edge);
+  border-radius: 8px;
+  padding: 5px 8px 6px;
+}
+.counts-head { font-size: 12px; color: var(--ink-dim); margin-bottom: 3px; }
+.count-row {
+  --chip: #888;
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  font-size: 13px;
+  line-height: 1.65;
+  border-left: 4px solid var(--chip);
+  padding-left: 6px;
+}
+.count-name { flex: 1 1 auto; }
+.count-num { font-family: var(--mono); font-size: 12.5px; color: var(--ink-dim); }
+.count-delta { font-size: 12.5px; color: var(--ink-dim); min-width: 8.5em; text-align: right; }
+.count-row.up .count-delta { color: var(--ok); font-weight: 700; }
+.count-row.down .count-delta { color: var(--accent); font-weight: 700; }
+
+.warnings { display: flex; flex-direction: column; gap: 3px; }
+.warn-head { font-size: 12px; color: var(--ink-dim); }
+.warn {
+  font-size: 13px;
+  line-height: 1.4;
+  background: rgba(255, 179, 71, 0.14);
+  border-left: 3px solid var(--accent);
+  border-radius: 4px;
+  padding: 4px 7px;
+  color: #ffd9a0;
+}
+.warn.done { background: rgba(78, 201, 122, 0.12); border-left-color: var(--ok); color: #b8e8c9; }
+
+/* ---------- readiness ---------- */
+
+.readiness { display: flex; flex-direction: column; gap: 5px; }
+.ready-chips { display: flex; flex-wrap: wrap; gap: 4px; }
+.ready-chip {
+  --chip: #888;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 32px;
+  padding: 3px 8px;
+  font-size: 13px;
+  box-shadow: none;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid transparent;
+  border-left: 4px solid var(--chip);
+  border-radius: 8px;
+  color: var(--ink-dim);
+}
+.ready-chip.open { background: rgba(255, 255, 255, 0.15); color: #fff; }
+.ready-init { font-weight: 800; color: var(--ink); }
+.ready-count { font-family: var(--mono); font-size: 12.5px; }
+.ready-ok .ready-count { color: var(--ok); }
+.ready-none { opacity: 0.72; border-color: rgba(255, 179, 71, 0.5); }
+.ready-none .ready-count { color: var(--accent); }
+.ready-idle { opacity: 0.4; }
+.ready-errors { border-color: rgba(255, 107, 107, 0.6); }
+.ready-badge {
+  background: var(--bad);
+  color: #260000;
+  font-weight: 700;
+  font-size: 11px;
+  border-radius: 9px;
+  padding: 0 5px;
+}
+.ready-detail {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--card-edge);
+  border-radius: 8px;
+  padding: 6px 9px;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--ink-dim);
+}
+.ready-detail-head { font-weight: 700; color: var(--ink); margin-bottom: 2px; }
+.ready-detail .ok { color: var(--ok); }
+.ready-err { color: #ffb0b0; }
+.ready-note { font-size: 13px; color: var(--ink-dim); }
+.ready-note.ok { color: var(--ok); }
+
+/* ---------- results ---------- */
+
+.results-panel {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--card-edge);
+  border-radius: 9px;
+  padding: 8px 9px;
+}
+.post-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin: 6px 0 2px;
+}
+/* The two outputs that actually reach the players — same weight, side by side. */
+.post-action {
+  flex: 1 1 8em;
+  background: var(--accent);
+  color: #201800;
+  border-color: var(--accent);
+  font-weight: 700;
+  font-size: 14px;
+  padding: 8px 10px;
+  min-height: 36px;
+}
+.post-group .group-label { flex-basis: 100%; }
+
+.result-group { margin-top: 6px; }
+.result-power {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.result-dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+.result-row {
+  display: flex;
+  gap: 6px;
+  align-items: baseline;
+  flex-wrap: wrap;
+  font-size: 13px;
+  line-height: 1.5;
+  padding-left: 15px;
+}
+.result-row code { font-family: var(--mono); color: var(--ink-dim); }
+.result-row.life { color: var(--ink-dim); }
+.res {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  border-radius: 4px;
+  padding: 0 5px;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--ink-dim);
+}
+.res-ok { background: rgba(78, 201, 122, 0.22); color: #9ee8b8; }
+.res-bounce, .res-void, .res-no-convoy, .res-disrupted { background: rgba(255, 179, 71, 0.22); color: #ffd9a0; }
+.res-dislodged, .res-disband { background: rgba(255, 107, 107, 0.22); color: #ffb0b0; }
+/* Why a result came out that way — plain text, not a chip: it qualifies the chip beside it. */
+.res-note { font-size: 11px; color: var(--ink-dim); font-style: italic; }
+
+.expand-entry {
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.modes { display: flex; flex-wrap: wrap; gap: 5px; align-items: center; }
+.mode {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  padding: 4px 9px;
+  min-height: 32px;
+  box-shadow: none;
+}
+.mode.active { background: var(--accent); color: #201800; font-weight: 700; border-color: var(--accent); }
+.keycap {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  border: 1px solid currentColor;
+  border-radius: 4px;
+  padding: 0 4px;
+  opacity: 0.75;
+}
+.keycap-hint {
+  font-family: var(--mono);
+  font-size: 11px;
+  margin-left: 8px;
+  opacity: 0.7;
+}
+
+.hint { font-size: 13px; color: var(--ink-dim); line-height: 1.35; margin: 0; }
+.modes .hint { flex-basis: 100%; }
+
+textarea.orders {
+  flex: 1 1 auto;
+  min-height: 180px;
+  resize: vertical;
+  font-family: var(--mono);
+  font-size: 13.5px;
+  line-height: 1.5;
+  background: rgba(0, 0, 0, 0.35);
+  color: var(--ink);
+  border: 1px solid var(--card-edge);
+  border-radius: 8px;
+  padding: 8px;
+}
+textarea.orders:focus { border-color: var(--accent); }
+
+.errors { display: flex; flex-direction: column; gap: 3px; }
+.err {
+  --chip: var(--bad);
+  display: flex;
+  gap: 7px;
+  align-items: baseline;
+  flex-wrap: wrap;
+  width: 100%;
+  text-align: left;
+  font-size: 13px;
+  background: rgba(255, 107, 107, 0.14);
+  border: 1px solid transparent;
+  border-left: 3px solid var(--chip);
+  border-radius: 4px;
+  padding: 4px 7px;
+  box-shadow: none;
+  color: var(--ink);
+}
+.err:hover { background: rgba(255, 107, 107, 0.24); }
+.err-power { font-weight: 700; font-size: 12px; }
+.err code { font-family: var(--mono); color: var(--ink); }
+.err-msg { color: #ffb0b0; }
+/* A coast complaint is amber, not red: the line parsed and the order is on the board —
+   it is one token away from legal, unlike a line the parser threw out entirely. */
+.err-coast { background: rgba(240, 179, 76, 0.14); --chip: #f0b34c; }
+.err-coast:hover { background: rgba(240, 179, 76, 0.26); }
+.err-coast .err-msg { color: #f3ca88; }
+
+.adjudicate {
+  background: var(--accent);
+  color: #201800;
+  font-weight: 700;
+  font-size: 15px;
+  padding: 10px;
+  border-color: var(--accent);
+}
+.adjudicate.has-errors {
+  background: rgba(255, 107, 107, 0.9);
+  border-color: rgba(255, 107, 107, 0.9);
+  color: #2a0000;
+}
+.adjudicate[disabled] { opacity: 0.4; }
+
+/* ---------- life + spawn ---------- */
+
+.life-panel {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--card-edge);
+  border-radius: 9px;
+  padding: 7px 9px;
+}
+.life-head { display: flex; justify-content: space-between; align-items: center; font-size: 13.5px; }
+.life-list { margin: 5px 0 0; padding-left: 17px; font-size: 13px; line-height: 1.5; color: var(--ink-dim); }
+.life-list li::marker { color: var(--accent); }
+
+.spawn-panel { display: flex; flex-direction: column; gap: 7px; }
+.spawn-panel h3 { margin: 0; font-size: 15px; }
+.spawn-row { display: flex; gap: 5px; align-items: center; flex-wrap: wrap; font-size: 13px; }
+.spawn-name { flex: 1 1 9em; }
+.spawn-opt { font-size: 13px; padding: 4px 10px; min-height: 32px; box-shadow: none; }
+.spawn-opt.active { background: var(--accent); color: #201800; font-weight: 700; border-color: var(--accent); }
+
+/* ---------- modal ---------- */
+
+.overlay-host { position: absolute; inset: 0; pointer-events: none; }
+.modal-scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+  padding: 16px;
+}
+.modal {
+  background: var(--card);
+  border: 1px solid var(--card-edge);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  padding: 16px 18px;
+  min-width: 280px;
+  max-width: 420px;
+  max-height: 86vh;
+  overflow-y: auto;
+}
+.modal h3 { margin: 0 0 6px; font-size: 16px; }
+.confirm-head {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--accent);
+  margin-top: 10px;
+}
+.confirm-row { font-size: 13px; line-height: 1.45; color: var(--ink-dim); }
+.copy-out { width: 100%; min-height: 220px; margin-top: 6px; }
+
+/* ---------- rules panel ---------- */
+
+/* Reference reading, not a dialog prompt: wider than the other modals, and set at a
+   comfortable measure rather than the cramped 13px the confirm rows use. */
+.modal:has(.rules) { max-width: 640px; }
+.rules { font-size: 13.5px; line-height: 1.55; color: var(--ink-dim); }
+.rules p { margin: 8px 0; }
+.rules a { color: var(--accent); }
+.rules code {
+  font-size: 0.92em;
+  padding: 0 3px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.07);
+}
+.rules-head {
+  margin: 18px 0 4px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--accent);
+}
+.rules-head:first-child { margin-top: 4px; }
+.rules-list { margin: 8px 0; padding-left: 18px; }
+.rules-list li { margin: 4px 0; }
+.rules-list li::marker { color: var(--accent); }
+.rules-table {
+  width: 100%;
+  margin: 8px 0;
+  border-collapse: collapse;
+  font-size: 12.5px;
+}
+.rules-table th,
+.rules-table td {
+  text-align: left;
+  padding: 4px 8px 4px 0;
+  border-bottom: 1px solid var(--card-edge);
+}
+.rules-table th { color: var(--ink); font-weight: 600; }
+
+/* ---------- footer ---------- */
+
+/* Its own strip along the bottom of the page, under both columns, so the attribution is
+   readable and covers no provinces. One line, clipped rather than allowed to grow. */
+.page-footer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: var(--footer-h);
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 12px;
+  font-size: 11px;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.5);
+  background: #0c0d10;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+  white-space: nowrap;
+  z-index: 3;
+}
+.page-footer span { overflow: hidden; text-overflow: ellipsis; }
+.page-footer a { color: rgba(255, 255, 255, 0.72); }
+
+/* The offline build has no sibling LICENSE-map.txt to link to, so it inlines the notice
+   as a #target-revealed overlay. The hosted page never emits this element. */
+.licence-page { display: none; }
+.licence-page:target {
+  display: block;
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  overflow: auto;
+  padding: 24px;
+  background: #0c0d10;
+}
+.licence-page pre {
+  margin: 12px 0 0;
+  white-space: pre-wrap;
+  font-size: 12px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+/* ---------- games drawer ---------- */
+
+.game-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.game-row.current .game-title { color: var(--accent); }
+.game-open {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1px;
+  text-align: left;
+  background: transparent;
+  box-shadow: none;
+  border-color: transparent;
+  padding: 4px 6px;
+  min-width: 0;
+}
+.game-open:hover { background: rgba(255, 255, 255, 0.07); }
+.game-title { font-size: 14px; font-weight: 600; }
+.game-meta { font-size: 11.5px; color: var(--ink-dim); }
+
+.text-input {
+  width: 100%;
+  font: inherit;
+  font-size: 14px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--card-edge);
+  color: var(--ink);
+}
+.text-input:focus { border-color: var(--accent); outline: none; }
+
+.sheet-handle { display: none; }
+
+/* Not enough width for two columns: stack, board first, panel below — never over it.
+   The bottom padding clears the fixed footer, so it doesn't sit on the panel. The panel
+   (above) and the board's own min-width already absorb ordinary narrowing — moderate
+   browser zoom on a normal desktop screen shrinks the panel and the map before it ever
+   reaches this; this only fires once the window is genuinely narrow, or portrait (a
+   tall, narrow window reads as "not enough width" even above 720px). */
+@media (max-width: 720px), (orientation: portrait) and (max-width: 900px) {
+  #app { flex-direction: column; }
+  .board-col { flex: 0 0 auto; min-width: 0; }
+  .board-wrap { flex: 0 0 auto; height: 46vh; }
+  .panel { flex: 1 1 auto; min-width: 0; max-width: none; margin: 8px 10px 0; min-height: 0; }
+  /* Narrow: the bar may become two rows, but nothing may be clipped off its end. */
+  .topbar { padding: 4px 8px; height: auto; min-height: 44px; flex-wrap: wrap; overflow: visible; }
+  .toolbar { flex-wrap: wrap; margin-left: 0; flex: 1 1 100%; }
+  .history-bar { max-width: none; }
+  .page-footer span:last-child { display: none; }
+}
+@media (max-height: 620px) and (max-width: 720px) {
+  .board-wrap { height: 40vh; }
+}
+
+/* ---------- phone: board first, panel as a bottom sheet ---------- */
+
+html.is-mobile #app { flex-direction: column; inset: 0; }
+html.is-mobile .board-col { flex: 1 1 auto; min-height: 0; }
+html.is-mobile .board-wrap { flex: 1 1 auto; height: auto; }
+
+html.is-mobile .panel {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: 0;
+  border-radius: 14px 14px 0 0;
+  max-height: 78vh;
+  height: auto;
+  flex: 0 0 auto;
+  padding: 0 10px 12px;
+  z-index: 5;
+  background: rgba(18, 19, 22, 0.97);
+}
+/* Collapsed: only the handle shows, so the board owns the screen. */
+html.is-mobile .panel > *:not(.sheet-handle) { display: none; }
+html.is-mobile.sheet-open .panel > * { display: block; }
+html.is-mobile.sheet-open .panel > .tabs,
+html.is-mobile.sheet-open .panel > .modes,
+html.is-mobile.sheet-open .panel > .readiness,
+html.is-mobile.sheet-open .panel > .errors,
+html.is-mobile.sheet-open .panel > .warnings,
+html.is-mobile.sheet-open .panel > .sandbox-banner { display: flex; }
+html.is-mobile.sheet-open .panel { overflow-y: auto; height: 78vh; }
+
+html.is-mobile .sheet-handle {
+  display: block;
+  width: 100%;
+  position: sticky;
+  top: 0;
+  margin: 0 0 6px;
+  padding: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  border-radius: 0;
+  border: none;
+  border-bottom: 1px solid var(--card-edge);
+  background: transparent;
+  box-shadow: none;
+  min-height: 44px;
+}
+
+html.is-mobile .topbar { padding: 3px 7px; gap: 4px; height: auto; min-height: 40px; flex-wrap: wrap; overflow: visible; }
+html.is-mobile .toolbar { flex-wrap: wrap; margin-left: 0; flex: 1 1 100%; }
+html.is-mobile .phase-header { flex: 1 1 100%; }
+html.is-mobile .title-input { width: 8em; }
+html.is-mobile .phase-label { font-size: 15px; }
+html.is-mobile .toast-host { bottom: 74px; }
+html.is-mobile .page-footer { display: none; }
+
+/* Comfortable thumb targets everywhere the GM/player taps on a phone. */
+html.is-mobile .tab,
+html.is-mobile .ready-chip,
+html.is-mobile .mode,
+html.is-mobile .spawn-opt,
+html.is-mobile .tool {
+  min-height: 34px;
+  display: inline-flex;
+  align-items: center;
+}
+html.is-mobile .tab-pencil { opacity: 0.8; font-size: 14px; }
