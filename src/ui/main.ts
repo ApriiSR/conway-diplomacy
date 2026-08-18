@@ -20,7 +20,9 @@ import { Board } from './board.js';
 import { powerTitle } from './colors.js';
 import { installGestures, isMobile, MOBILE_EXIT, MOBILE_MAX, syncLayoutClass } from './gestures.js';
 import {
+  canStepView,
   historyViews,
+  stepView,
   viewLife,
   viewResults,
   viewState,
@@ -30,7 +32,7 @@ import { renderHud, renderToast } from './hud.js';
 import { ClickController, type ClickMode } from './interaction.js';
 import { provinceOf } from '../engine/map-utils.js';
 import { createMapArt, provinceLabel } from './map-art.js';
-import { askBuild, askCoast, INTRO_KEY, showModal } from './modals.js';
+import { askBuild, askCoast, askUndo, INTRO_KEY, showModal } from './modals.js';
 import {
   combinedText,
   confirmAdjudicate,
@@ -40,7 +42,7 @@ import {
   type OrderText,
 } from './order-entry.js';
 import { renderPanel } from './panel.js';
-import { upsertOrderLine } from './orders-text.js';
+import { orderPower, upsertOrderLine } from './orders-text.js';
 import { applyDraft, lifeCountsText, lifeSummaryText, persist } from './session.js';
 import { currentGameId, listGames, loadGame, migrateLegacySave, readShareHash } from './persist.js';
 import { el } from './svg.js';
@@ -216,6 +218,26 @@ export class App {
   /** What the board on screen is: the entry's own name, or the phase awaiting orders. */
   viewLabel(): string {
     return this.viewedView()?.label ?? nextPhaseLabel(this.state);
+  }
+
+  /**
+   * Can the history bar's ← / → step that way? `delta` is in picker positions, where the
+   * last one past the views is "Current".
+   */
+  canStepView(delta: number): boolean {
+    return canStepView(this.viewIndex, this.views().length, delta);
+  }
+
+  /**
+   * Move one entry along the history bar. Looking at something is not editing it — this
+   * never touches `history` or `future` — and a step is the GM choosing a view, so it
+   * clears `landedOnAdjudication` the way the dropdown does.
+   */
+  stepView(delta: number): void {
+    if (!this.canStepView(delta)) return;
+    this.viewIndex = stepView(this.viewIndex, this.views().length, delta);
+    this.landedOnAdjudication = false;
+    this.render();
   }
 
   /** Park on the phase view of the record just adjudicated: its arrows, its results. */
@@ -423,6 +445,21 @@ export class App {
     this.render();
   }
 
+  /** Does undoing discard an adjudication? (Which is the only thing undo ever does.) */
+  get canUndo(): boolean {
+    return this.history.length > 0;
+  }
+
+  get canRedo(): boolean {
+    return this.future.length > 0;
+  }
+
+  /** The label undo's confirmation names — the phase whose result would be discarded. */
+  undoLabel(): string | null {
+    const record = this.history[this.history.length - 1];
+    return record ? nextPhaseLabel(record.before) : null;
+  }
+
   undo(): void {
     const record = this.history.pop();
     if (!record) return;
@@ -430,8 +467,15 @@ export class App {
     this.state = record.before;
     this.viewIndex = null;
     this.landedOnAdjudication = false;
+    // The adjudicated orders go back in the box. Undo hands the phase back to be fixed
+    // and re-run, so making the GM retype what they already entered would be the whole
+    // cost of the mistake all over again.
     this.orderText = emptyText();
-    this.allText = '';
+    for (const o of record.orders) {
+      this.orderText[orderPower(o)] = upsertOrderLine(this.orderText[orderPower(o)] ?? '', o);
+    }
+    this.allText = combinedText(this);
+    this.pushTextToBox = true;
     this.clicks.reset();
     this.entryOpen = true;
     this.persist();
@@ -445,6 +489,12 @@ export class App {
     this.state = record.after;
     this.viewIndex = null;
     this.landedOnAdjudication = false;
+    // Redoing consumes those orders exactly as adjudicating did, so the box is emptied for
+    // the next phase — otherwise undo's restored orders are left behind as a stale draft,
+    // e.g. a `Build A PRU` sitting in the movement phase that follows a spawn choice.
+    this.orderText = emptyText();
+    this.allText = '';
+    this.pushTextToBox = true;
     this.clicks.reset();
     this.entryOpen = false;
     this.persist();
@@ -509,7 +559,7 @@ export class App {
       } else if (k === 'z') {
         e.preventDefault();
         if (e.shiftKey) this.redo();
-        else this.undo();
+        else askUndo(this);
       }
       return;
     }

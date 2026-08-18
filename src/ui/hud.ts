@@ -1,6 +1,7 @@
 import type { GameState } from '../engine/types.js';
 import { powerTitle } from './colors.js';
 import type { App } from './main.js';
+import { viewAtPosition, viewPosition } from './history-views.js';
 import { helpModal, rulesModal } from './modals.js';
 import { powerCounts } from './phase-info.js';
 import { canCopyImage } from './persist.js';
@@ -94,28 +95,34 @@ export function renderHud(app: App): void {
   tools.append(btn('Games', () => gamesMenu(app), '', 'Switch between saved games'));
   tools.append(btn('Rules', () => rulesModal(app), '', RULES_TITLE));
   tools.append(btn('?', () => helpModal(app), '', 'How to run a game'));
-  tools.append(btn('⋯', () => moreMenu(app), '', 'Rules, export, import, new game'));
+  tools.append(btn('⋯', () => moreMenu(app), '', 'Undo, rules, export, import, new game'));
 
   // Title left, history slider taking the slack, actions right — one row.
   app.hud.append(header);
-  if (app.history.length || app.future.length) app.hud.append(historyBar(app));
+  if (app.history.length) app.hud.append(historyBar(app));
   app.hud.append(tools);
 }
 
-/** Undo / redo / scrubber, grouped and labelled so the glyphs aren't cryptic. */
+/**
+ * The history bar is *navigation only* — the arrows step through the same list the
+ * dropdown beside them names, and nothing here alters the game. Undo and redo used to sit
+ * on these arrows, and next to a phase picker they simply read as previous/next: pressing
+ * ↶ to go back a view threw away an adjudication instead. Those two live in the ⋯ menu now
+ * (and on ⌘Z / ⇧⌘Z), where they are spelled out in words.
+ */
 function historyBar(app: App): HTMLElement {
   const bar = el('div', { class: 'history-bar' }, [el('span', { class: 'group-label' }, ['History'])]);
-  const step = (label: string, tip: string, enabled: boolean, fn: () => void) => {
+  const step = (label: string, tip: string, delta: number) => {
     const b = el('button', { class: 'tool step', title: tip, 'aria-label': tip }, [label]);
-    if (!enabled) b.setAttribute('disabled', '');
-    b.addEventListener('click', fn);
+    if (!app.canStepView(delta)) b.setAttribute('disabled', '');
+    b.addEventListener('click', () => app.stepView(delta));
     return b;
   };
   bar.append(
-    step('↶', 'Undo (⌘Z)', app.history.length > 0, () => app.undo()),
-    step('↷', 'Redo (⇧⌘Z)', app.future.length > 0, () => app.redo()),
+    step('↶', 'Previous view', -1),
+    step('↷', 'Next view', +1),
+    ...scrubber(app),
   );
-  if (app.history.length) bar.append(...scrubber(app));
   return bar;
 }
 
@@ -124,11 +131,15 @@ function historyBar(app: App): HTMLElement {
  * whichever one is chosen, so choosing one doesn't resize the bar around it. It lists
  * *views*, not records — a phase and the Life step that followed it are two boards to
  * look at, so they are two entries.
+ *
+ * It always lists *every* view plus "Current", and every one of them is selectable from
+ * wherever you are — including from the first view and from Current. Jumping is jumping;
+ * where you happen to be standing has never been a reason to bar a destination.
  */
 function scrubber(app: App): HTMLElement[] {
   const views = app.views();
   const max = views.length;
-  const value = app.viewIndex === null ? max : app.viewIndex;
+  const value = viewPosition(app.viewIndex, max);
   const select = el('select', {
     class: 'scrub',
     'aria-label': 'Phase history',
@@ -141,8 +152,7 @@ function scrubber(app: App): HTMLElement[] {
   select.value = String(value);
   // `change`, not `input`: re-rendering the bar mid-interaction is what broke dragging.
   select.addEventListener('change', () => {
-    const v = Number(select.value);
-    app.viewIndex = v >= max ? null : v;
+    app.viewIndex = viewAtPosition(Number(select.value), max);
     // Chosen deliberately now, so nothing else may move it back.
     app.landedOnAdjudication = false;
     app.render();

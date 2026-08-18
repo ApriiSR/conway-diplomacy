@@ -37,7 +37,8 @@ export const HELP_ALSO_TITLE = 'Also';
 
 export const HELP_ALSO: string[] = [
   'Spawn choices — when the Life step births a unit on a coast, its owner picks army or fleet. Use the buttons, or type the decisions like builds (`England: Build F Edi`). Undecided births become armies.',
-  'History — every phase, and every Life step, is its own entry. Each shows the board its orders or marks acted on, so a bounce ✕ sits where the move was stopped and a Life ✕ sits on the unit that died. "Current" is the live board.',
+  'History — every phase, and every Life step, is its own entry. Each shows the board its orders or marks acted on, so a bounce ✕ sits where the move was stopped and a Life ✕ sits on the unit that died. Pick any entry from the dropdown, or step through them with ↶ and ↷; "Current" is the live board. Looking is read-only — nothing in the history bar changes the game.',
+  'Undo — in the ⋯ menu, or ⌘Z (redo is ⇧⌘Z). It takes back the last adjudication itself: the orders come back to the box and the result is discarded, so it asks first.',
   'Share link — hands anyone an independent copy of the board to experiment with. Nothing they do there affects your game.',
   'Export / Import JSON — saves or restores a whole game, history included. Use it to back a game up, or to move it to another browser.',
 ];

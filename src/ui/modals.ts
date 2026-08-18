@@ -92,6 +92,29 @@ export function askBuild(app: App, prov: ProvinceId, coasts: string[]): void {
   });
 }
 
+/**
+ * Undo throws an adjudication away, so it asks first — and names the phase, because the
+ * one thing the GM needs to know is *which* result is about to go. Redo asks nothing: it
+ * only puts back what this dialog took.
+ */
+export function askUndo(app: App): void {
+  const label = app.undoLabel();
+  if (!label) return;
+  showModal(app, `Undo ${label}?`, (close) => {
+    const go = el('button', { class: 'big' }, ['Undo it']);
+    go.addEventListener('click', () => {
+      close();
+      app.undo();
+    });
+    return [
+      el('p', { class: 'hint' }, [
+        'Its orders stay in the box; the result is discarded — you can redo until you adjudicate again.',
+      ]),
+      go,
+    ];
+  }, { cancelLabel: 'Keep it' });
+}
+
 /** Clipboard fallback: hand the GM the text, selected, to copy by hand. */
 export function showCopyText(app: App, title: string, text: string): void {
   showModal(app, title, () => {

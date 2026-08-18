@@ -39,6 +39,32 @@ export function historyViews(history: PhaseRecord[]): HistoryView[] {
 }
 
 /**
+ * Stepping through the history bar's entries. The picker's positions are the views plus
+ * one more on the end for "Current", so a step is arithmetic over `0…count` and only the
+ * two ends are special. `null` means "Current" here exactly as it does for `viewIndex`,
+ * so the translation happens once, at this boundary.
+ */
+export function viewPosition(viewIndex: number | null, count: number): number {
+  if (viewIndex === null) return count;
+  return Math.min(Math.max(viewIndex, 0), count);
+}
+
+export function viewAtPosition(position: number, count: number): number | null {
+  return position >= count ? null : Math.max(position, 0);
+}
+
+export function canStepView(viewIndex: number | null, count: number, delta: number): boolean {
+  const next = viewPosition(viewIndex, count) + delta;
+  return next >= 0 && next <= count;
+}
+
+/** The neighbouring entry, or the one we're on when there is no neighbour that way. */
+export function stepView(viewIndex: number | null, count: number, delta: number): number | null {
+  if (!canStepView(viewIndex, count, delta)) return viewAtPosition(viewPosition(viewIndex, count), count);
+  return viewAtPosition(viewPosition(viewIndex, count) + delta, count);
+}
+
+/**
  * The board the Life step ran on. Recorded by `flow.ts`; reconstructed here for games
  * exported before it was — put the dead back, take the newborns out, which is exactly
  * what the step did in reverse.

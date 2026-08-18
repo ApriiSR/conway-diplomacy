@@ -1,9 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import type { GameState, LifeEvent, PhaseRecord, Unit } from '../../src/engine/types';
 import {
+  canStepView,
   historyViews,
   preLifeUnits,
+  stepView,
+  viewAtPosition,
   viewLife,
+  viewPosition,
   viewResults,
   viewState,
 } from '../../src/ui/history-views';
@@ -123,5 +127,51 @@ describe('history views', () => {
     record.after = board({ season: 'SUMMER', phase: 'SPAWN_CHOICE', pendingBirths: [pending] });
     record.life = { units: [], events: [pending], pending: [pending] };
     expect(viewState(historyViews([record])[1]!).pendingBirths).toBeUndefined();
+  });
+});
+
+/** Two views (a phase and its Life step) plus "Current" — positions 0, 1, 2. */
+describe('stepping through the history bar', () => {
+  const COUNT = 2;
+
+  it('puts "Current" one past the last view, in both directions', () => {
+    expect(viewPosition(null, COUNT)).toBe(COUNT);
+    expect(viewPosition(0, COUNT)).toBe(0);
+    expect(viewAtPosition(COUNT, COUNT)).toBeNull();
+    expect(viewAtPosition(1, COUNT)).toBe(1);
+  });
+
+  it('steps forward through every view and ends on Current', () => {
+    expect(stepView(0, COUNT, +1)).toBe(1);
+    expect(stepView(1, COUNT, +1)).toBeNull();
+  });
+
+  it('steps back from Current onto the last view', () => {
+    expect(stepView(null, COUNT, -1)).toBe(COUNT - 1);
+    expect(stepView(1, COUNT, -1)).toBe(0);
+  });
+
+  it('stops at the ends rather than wrapping', () => {
+    expect(canStepView(0, COUNT, -1)).toBe(false);
+    expect(stepView(0, COUNT, -1)).toBe(0);
+    expect(canStepView(null, COUNT, +1)).toBe(false);
+    expect(stepView(null, COUNT, +1)).toBeNull();
+  });
+
+  it('can always step somewhere in between', () => {
+    expect(canStepView(0, COUNT, +1)).toBe(true);
+    expect(canStepView(null, COUNT, -1)).toBe(true);
+    expect(canStepView(1, COUNT, -1)).toBe(true);
+  });
+
+  it('leaves the only position alone when there is no history at all', () => {
+    expect(canStepView(null, 0, -1)).toBe(false);
+    expect(canStepView(null, 0, +1)).toBe(false);
+    expect(stepView(null, 0, -1)).toBeNull();
+  });
+
+  it('never lands outside the list, whatever it is handed', () => {
+    expect(stepView(99, COUNT, +1)).toBeNull();
+    expect(stepView(-4, COUNT, -1)).toBe(0);
   });
 });

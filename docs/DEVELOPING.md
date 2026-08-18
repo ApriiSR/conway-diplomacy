@@ -108,7 +108,7 @@ piece of the interface means opening the file named after it.
 | `order-entry.ts` | the order text model and its UI: the long-lived textarea, tabs, mode bar, inline errors and warnings, readiness strip, the adjudicate button and its problems-first confirm dialog | ~565 |
 | `panel.ts` | the panel column's layout: results, the Life list, spawn-choice rows, sandbox banner, where the intro card and entry section go | ~290 |
 | `history-views.ts` | what the history lists and what each entry puts on the board — pure, no DOM | ~73 |
-| `hud.ts` | the bar over the map: phase header, tool buttons, history (undo/redo/phase picker), toasts | ~166 |
+| `hud.ts` | the bar over the map: phase header, tool buttons, history (view stepping + phase picker), toasts | ~172 |
 | `modals.ts` | the modal stack and its dialogs: coast picker, build picker, clipboard fallback, Help, Rules, the first-run card | ~170 |
 | `gestures.ts` | phone layout: the mobile/desktop decision and its hysteresis, touch pan/pinch/double-tap, the bottom sheet's handle | ~149 |
 | `board.ts` | the `Board` class: the layer stack and the overlays that move — units, order arrows, Life marks, selection | ~357 |
@@ -136,6 +136,14 @@ piece of the interface means opening the file named after it.
   records, and both return to the live board. "Current" is the live board and carries no
   result or Life marks at all — only what the GM is entering now, and the Life *preview* if
   that toggle is on.
+- **The history bar navigates and nothing else.** Its dropdown always lists every view plus
+  "Current", all of them selectable from wherever you are, and its ↶ / ↷ step one entry
+  along that same list (`app.stepView`, over the pure `viewPosition`/`stepView` helpers in
+  `history-views.ts`, whose positions are `0…views.length` with the last one meaning
+  "Current"). The arrows used to be undo/redo; sitting beside a phase picker they read as
+  previous/next, and pressing ↶ to step back discarded an adjudication instead — which then
+  looked like the *dropdown* being broken, since undo pops `history` and the views list
+  shrinks with it.
 - **Adjudicating lands on the phase view it just produced** (`landOnLastPhase`), so the
   results are on the board and in the panel, ready to copy — and sets `landedOnAdjudication`.
   The first move toward the next phase — a keystroke in the box, a unit click, a power tab,
@@ -149,7 +157,11 @@ piece of the interface means opening the file named after it.
   orders and results, a Life view its births and deaths, and the caption is the view's own
   label. The HUD's `Orders: on/off` toggle (`app.exportMarks`) exports the same view without
   the arrows and marks; the legend rows follow, since they are derived from what is drawn.
-- Undo/redo over the history stack, export/import JSON, share links, PNG export.
+- **Undo/redo live in the ⋯ menu** (`moreMenu`) and on ⌘Z / ⇧⌘Z. Undo is record-level — it
+  pops `history`, restores `before`, and puts that record's orders back in the entry box —
+  so it goes through `askUndo()`, which names the phase whose result is about to be
+  discarded. Redo only restores what undo took, so it asks nothing.
+- Export/import JSON, share links, PNG export.
 - `src/ui/rules-text.ts` is the single source of the variant's rules. The Rules panel renders
   it, and the README's rules section is generated from it — `npm run rules:sync` rewrites
   that section, and `npm test` fails if it is stale.

@@ -2,7 +2,7 @@ import type { LifeResult, PhaseRecord, Power, Variant } from '../engine/types.js
 import { GREAT_POWERS } from '../engine/types.js';
 import { initialState, lifeStepLabel, nextPhaseLabel } from './api.js';
 import type { App } from './main.js';
-import { showCopyText, showModal, helpModal, rulesModal } from './modals.js';
+import { askUndo, showCopyText, showModal, helpModal, rulesModal } from './modals.js';
 import { emptyText } from './order-entry.js';
 import {
   copyPng,
@@ -196,9 +196,13 @@ export function gamesMenu(app: App): void {
   });
 }
 
-/** The ⋯ menu: everything that acts on the game *file* rather than on the board. */
+/**
+ * The ⋯ menu: undo/redo, plus everything that acts on the game *file* rather than on the
+ * board. Undo lives here because it is the one board action too destructive to spend a
+ * bare glyph on.
+ */
 export function moreMenu(app: App): void {
-  showModal(app, 'Game file', (close) => {
+  showModal(app, 'Game', (close) => {
     const item = (label: string, hint: string, fn: () => void) => {
       const b = el('button', { class: 'big' }, [label]);
       b.addEventListener('click', () => {
@@ -208,6 +212,22 @@ export function moreMenu(app: App): void {
       return [b, el('p', { class: 'hint' }, [hint])];
     };
     const out: HTMLElement[] = [];
+    // Undo and redo are spelled out here rather than sitting on a glyph in the history
+    // bar, where they read as previous/next beside the phase picker.
+    if (app.canUndo) {
+      out.push(
+        ...item(
+          `Undo last adjudication (⌘Z)`,
+          `Take back ${app.undoLabel()} — its orders come back to the box, its result is discarded.`,
+          () => askUndo(app),
+        ),
+      );
+    }
+    if (app.canRedo) {
+      out.push(
+        ...item('Redo (⇧⌘Z)', 'Put back the adjudication you just undid.', () => app.redo()),
+      );
+    }
     out.push(
       ...item(RULES_TITLE, 'The Life step, neutrals, edge cases and this tool\'s own rulings.', () =>
         rulesModal(app),
