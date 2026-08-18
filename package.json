@@ -1,0 +1,26 @@
+{
+  "name": "conway-diplomacy",
+  "version": "1.0.0",
+  "description": "GM adjudicator for Conway's Game of Diplomacy — standard Diplomacy with a Game of Life step",
+  "author": "ApriiSR",
+  "license": "GPL-2.0-or-later",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "dev": "node scripts/build.mjs && esbuild src/ui/main.ts --bundle --format=esm --target=es2022 --outfile=dist/app.js --sourcemap --watch --servedir=dist --serve=8000",
+    "rules:sync": "UPDATE_README=1 vitest run test/ui/rules-text.test.ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc -p ."
+  },
+  "devDependencies": {
+    "@types/node": "^26.2.0",
+    "esbuild": "^0.28.2",
+    "typescript": "^7.0.2",
+    "vitest": "^4.1.10"
+  },
+  "private": true
+}
