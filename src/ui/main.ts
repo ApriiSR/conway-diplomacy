@@ -62,6 +62,8 @@ export class App {
 
   state: GameState;
   history: PhaseRecord[] = [];
+  /** The redo stack. Saved and exported with the game: undo promises the result can be put
+   * back until the next adjudication, and a reload must not quietly break that promise. */
   future: PhaseRecord[] = [];
   title = '';
   /** True for a `#s=` copy: everything still works, but it never writes the GM's slot. */
@@ -137,6 +139,7 @@ export class App {
       this.gameId = id;
       this.state = saved.state;
       this.history = saved.history ?? [];
+      this.future = saved.future ?? [];
       this.title = saved.title ?? '';
       applyDraft(this, saved.draft);
     } else {

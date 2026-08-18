@@ -160,7 +160,11 @@ piece of the interface means opening the file named after it.
 - **Undo/redo live in the ⋯ menu** (`moreMenu`) and on ⌘Z / ⇧⌘Z. Undo is record-level — it
   pops `history`, restores `before`, and puts that record's orders back in the entry box —
   so it goes through `askUndo()`, which names the phase whose result is about to be
-  discarded. Redo only restores what undo took, so it asks nothing.
+  discarded. Redo only restores what undo took, so it asks nothing. The redo stack
+  (`app.future`) is autosaved and exported alongside `history` and validated on import the
+  same way (as `redo stack`, so errors name the list they are in) — undo promises the
+  result can be put back until the next adjudication, and a reload must not quietly break
+  that promise. `exportGame` omits it when empty, so ordinary files are unchanged.
 - Export/import JSON, share links, PNG export.
 - `src/ui/rules-text.ts` is the single source of the variant's rules. The Rules panel renders
   it, and the README's rules section is generated from it — `npm run rules:sync` rewrites

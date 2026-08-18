@@ -211,6 +211,36 @@ describe('exportGame / importGame', () => {
     const json = JSON.stringify({ version: 1, state: sampleState(), history: { nope: true } });
     expect(() => importGame(json)).toThrow(/history is not a list/);
   });
+
+  it('round-trips the redo stack', () => {
+    const state = sampleState();
+    const record: PhaseRecord = { before: state, orders: [], results: [], after: state };
+    const imported = importGame(exportGame({ state, history: [], future: [record] }));
+    expect(imported.future).toEqual([record]);
+  });
+
+  it('leaves an empty redo stack out of the file, and reads its absence as empty', () => {
+    const state = sampleState();
+    const json = exportGame({ state, history: [], future: [] });
+    expect(JSON.parse(json)).not.toHaveProperty('future');
+    expect(importGame(json).future).toEqual([]);
+    // Files written before the redo stack travelled at all read the same way.
+    expect(importGame(JSON.stringify({ version: 1, state, history: [] })).future).toEqual([]);
+  });
+
+  it('validates the redo stack like the history, and says which list is wrong', () => {
+    const state = sampleState();
+    const broken = {
+      before: state,
+      orders: [],
+      results: [],
+      after: { ...state, units: [{ power: 'FRANCE', type: 'A', loc: 'zzz' }] },
+    };
+    const json = JSON.stringify({ version: 1, state, history: [], future: [broken] });
+    expect(() => importGame(json)).toThrow(/redo stack phase 1.*'after'.*unknown province/);
+    const notList = JSON.stringify({ version: 1, state, history: [], future: 'nope' });
+    expect(() => importGame(notList)).toThrow(/redo stack is not a list/);
+  });
 });
 
 describe('share link size (Discord 2000-char message budget)', () => {

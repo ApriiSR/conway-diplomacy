@@ -48,7 +48,13 @@ export function applyDraft(app: App, saved: OrderDraft | undefined): void {
 }
 
 export function snapshot(app: App): SavedGame {
-  return { state: app.state, history: app.history, title: app.title, draft: draft(app) };
+  return {
+    state: app.state,
+    history: app.history,
+    future: app.future,
+    title: app.title,
+    draft: draft(app),
+  };
 }
 
 /**
@@ -70,7 +76,7 @@ export function persist(app: App): void {
 export function load(app: App, game: SavedGame): void {
   app.state = game.state;
   app.history = game.history ?? [];
-  app.future = [];
+  app.future = game.future ?? [];
   app.orderText = emptyText();
   app.allText = '';
   app.activeTab = 'ALL';
@@ -237,7 +243,7 @@ export function moreMenu(app: App): void {
       ...item('Export JSON', 'The whole session: board, history, title and any drafts.', () => {
         app.flushText();
         downloadJson(
-          { state: app.state, history: app.history, title: app.title, draft: draft(app) },
+          snapshot(app),
           `${filenameStem(app)}.json`,
         );
       }),

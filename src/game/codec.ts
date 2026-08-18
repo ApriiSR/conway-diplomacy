@@ -209,6 +209,13 @@ const EXPORT_VERSION = 1;
 export interface GameExport {
   state: GameState;
   history: PhaseRecord[];
+  /**
+   * The redo stack — records undo took off `history`, newest last. It travels with the
+   * game because a redo window that ended at the next reload was a silent one: undo says
+   * the result can be put back until you adjudicate again, and that has to survive
+   * closing the tab. Absent in files written before this, which read as an empty stack.
+   */
+  future?: PhaseRecord[];
 }
 
 interface ExportPayload extends GameExport {
@@ -217,6 +224,8 @@ interface ExportPayload extends GameExport {
 
 export function exportGame(data: GameExport): string {
   const payload: ExportPayload = { version: EXPORT_VERSION, state: data.state, history: data.history };
+  // Written only when there is one, so an ordinary export is byte-for-byte what it was.
+  if (data.future?.length) payload.future = data.future;
   return JSON.stringify(payload);
 }
 
@@ -225,14 +234,18 @@ export function exportGame(data: GameExport): string {
  * record has to be caught here rather than crashing the app several clicks later. Each
  * record's boards go through the same `validateState` as the live one, and `orders`/
  * `results` must at least be arrays — the shapes everything downstream iterates.
+ *
+ * The redo stack holds the same records and can be redone straight back onto the board,
+ * so it goes through this too — under its own `what`, so an error names the list it is
+ * actually in.
  */
-function validateHistory(history: unknown, map: MapData): PhaseRecord[] {
+function validateHistory(history: unknown, map: MapData, what = 'history'): PhaseRecord[] {
   if (history === undefined || history === null) return [];
   if (!Array.isArray(history)) {
-    throw new Error('invalid game file: history is not a list of phases');
+    throw new Error(`invalid game file: ${what} is not a list of phases`);
   }
   history.forEach((record, i) => {
-    const where = `history phase ${i + 1}`;
+    const where = `${what} phase ${i + 1}`;
     if (!record || typeof record !== 'object') {
       throw new Error(`invalid game file: ${where} is not a phase record`);
     }
@@ -266,5 +279,9 @@ export function importGame(json: string, map: MapData = STANDARD_MAP): GameExpor
   }
   const state = payload.state;
   validateState(state, map);
-  return { state, history: validateHistory(payload.history, map) };
+  return {
+    state,
+    history: validateHistory(payload.history, map),
+    future: validateHistory(payload.future, map, 'redo stack'),
+  };
 }

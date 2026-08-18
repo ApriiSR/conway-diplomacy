@@ -22,6 +22,8 @@ export interface OrderDraft {
 export interface SavedGame {
   state: GameState;
   history: PhaseRecord[];
+  /** The redo stack, saved so that closing the tab doesn't quietly end the redo window. */
+  future?: PhaseRecord[];
   title?: string;
   draft?: OrderDraft;
 }
@@ -205,15 +207,14 @@ function download(blob: Blob, filename: string): void {
 }
 
 /**
- * The whole session, not just the board: `exportGame` owns `state`/`history`, and the
- * GM-side extras (title, in-progress drafts) ride alongside it so an import restores an
+ * The whole session, not just the board: `exportGame` owns `state`/`history`/`future`, and
+ * the GM-side extras (title, in-progress drafts) ride alongside it so an import restores an
  * identical session. Power labels live inside `state`, so they travel already.
  */
 export function downloadJson(game: SavedGame, filename: string): void {
-  const core = JSON.parse(exportGame({ state: game.state, history: game.history })) as Record<
-    string,
-    unknown
-  >;
+  const core = JSON.parse(
+    exportGame({ state: game.state, history: game.history, future: game.future }),
+  ) as Record<string, unknown>;
   if (game.title) core.title = game.title;
   if (game.draft) core.draft = game.draft;
   download(new Blob([JSON.stringify(core)], { type: 'application/json' }), filename);
@@ -232,7 +233,13 @@ export function pickJsonFile(): Promise<SavedGame> {
         .then((t) => {
           const g = importGame(t);
           const extra = JSON.parse(t) as { title?: string; draft?: OrderDraft };
-          resolve({ state: g.state, history: g.history, title: extra.title, draft: extra.draft });
+          resolve({
+            state: g.state,
+            history: g.history,
+            future: g.future,
+            title: extra.title,
+            draft: extra.draft,
+          });
         })
         .catch(reject);
     });
