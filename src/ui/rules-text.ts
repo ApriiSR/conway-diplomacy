@@ -75,7 +75,7 @@ export const RULES: RulesBlock[] = [
     kind: 'para',
     text:
       'Its type follows the province — fleet at sea, army inland — but on the coast it is the ' +
-      'owning player\'s choice, which the GM only records. Those choices are made in the **Spawn ' +
+      'owning player\'s choice. Those choices are made in the **Spawn ' +
       'Choices** phase that follows a Life step, entered and reported as build orders: ' +
       '`England: Build F Edi`. If no choice is given, the new unit is an army.',
   },

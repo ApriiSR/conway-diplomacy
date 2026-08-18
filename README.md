@@ -32,7 +32,7 @@ A province's neighbours are the provinces it touches on the map — by land or b
 
 A newborn unit belongs to whichever power supplied at least two of its three parents; with no such majority it is **neutral**.
 
-Its type follows the province — fleet at sea, army inland — but on the coast it is the owning player's choice, which the GM only records. Those choices are made in the **Spawn Choices** phase that follows a Life step, entered and reported as build orders: `England: Build F Edi`. If no choice is given, the new unit is an army.
+Its type follows the province — fleet at sea, army inland — but on the coast it is the owning player's choice. Those choices are made in the **Spawn Choices** phase that follows a Life step, entered and reported as build orders: `England: Build F Edi`. If no choice is given, the new unit is an army.
 
 ## Neutral units
 
