@@ -127,9 +127,8 @@ export const RULES: RulesBlock[] = [
       'Civil disorder: unordered units hold. If a power owes removals it didn\'t order, the tool ' +
         'auto-removes the units furthest from home by the standard distance-from-home rule rather ' +
         'than prompting again.',
-      'Elimination is standard — zero supply centres. The tool doesn\'t enforce victory: the video\'s ' +
-        'game ended in a draw vote, and whether an 18-centre solo even applies to this variant is ' +
-        'left to the GM.',
+      'Controlling 18 supply centres is generally a solo victory, although this adjudicator ' +
+        'doesn\'t enforce any particular win condition.',
       'If one unit is given more than one order, the last one wins, and the tool flags the unit so ' +
         'the GM can see it happened.',
     ],
