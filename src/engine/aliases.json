@@ -1,0 +1,460 @@
+{
+ "adr": [
+  "adr",
+  "adriatic",
+  "adriatic sea"
+ ],
+ "aeg": [
+  "aeg",
+  "aegean",
+  "aegean sea"
+ ],
+ "alb": [
+  "alb",
+  "albania"
+ ],
+ "ank": [
+  "ank",
+  "ankara"
+ ],
+ "apu": [
+  "apu",
+  "apulia"
+ ],
+ "arm": [
+  "arm",
+  "armenia"
+ ],
+ "bal": [
+  "bal",
+  "baltic",
+  "baltic sea"
+ ],
+ "bar": [
+  "bar",
+  "barents",
+  "barents sea"
+ ],
+ "bel": [
+  "bel",
+  "belgium"
+ ],
+ "ber": [
+  "ber",
+  "berl",
+  "berlin"
+ ],
+ "bla": [
+  "bla",
+  "black",
+  "black sea",
+  "bs"
+ ],
+ "boh": [
+  "boh",
+  "bohemia"
+ ],
+ "bot": [
+  "bot",
+  "both",
+  "bothnia",
+  "gob",
+  "gulf of bothnia",
+  "gulfofb"
+ ],
+ "bre": [
+  "bre",
+  "brest"
+ ],
+ "bud": [
+  "bud",
+  "budapest"
+ ],
+ "bul": [
+  "bul",
+  "bulg",
+  "bulgaria"
+ ],
+ "bul/ec": [
+  "bul (ec)",
+  "bul (nc)",
+  "bul/ec",
+  "bul/nc",
+  "bulgaria (east coast)",
+  "bulgaria (ec)",
+  "bulgaria (nc)",
+  "bulgaria/ec",
+  "bulgaria/nc"
+ ],
+ "bul/sc": [
+  "bul (sc)",
+  "bul/sc",
+  "bulgaria (sc)",
+  "bulgaria (south coast)",
+  "bulgaria/sc"
+ ],
+ "bur": [
+  "bur",
+  "burg",
+  "burgandy",
+  "burgundy"
+ ],
+ "cly": [
+  "cly",
+  "clyde"
+ ],
+ "con": [
+  "con",
+  "constantinople"
+ ],
+ "den": [
+  "den",
+  "denmark"
+ ],
+ "eas": [
+  "eas",
+  "eas med",
+  "east",
+  "eastern",
+  "eastern mediterranean",
+  "eastmed",
+  "emd",
+  "eme",
+  "emed",
+  "ems"
+ ],
+ "edi": [
+  "edi",
+  "edinburgh"
+ ],
+ "eng": [
+  "channel",
+  "ech",
+  "eng",
+  "eng ch",
+  "english channel"
+ ],
+ "fin": [
+  "fin",
+  "finland"
+ ],
+ "gal": [
+  "gal",
+  "galacia",
+  "galicia"
+ ],
+ "gas": [
+  "gas",
+  "gasc",
+  "gascony"
+ ],
+ "gre": [
+  "gre",
+  "greece"
+ ],
+ "hel": [
+  "hel",
+  "helg",
+  "helgoland",
+  "helgoland bight",
+  "heligoland",
+  "heligoland bight"
+ ],
+ "hol": [
+  "hol",
+  "holland"
+ ],
+ "ion": [
+  "ion",
+  "ionian",
+  "ionian sea"
+ ],
+ "iri": [
+  "iri",
+  "irish",
+  "irish sea",
+  "irs"
+ ],
+ "kie": [
+  "kie",
+  "kiel"
+ ],
+ "lon": [
+  "lon",
+  "london"
+ ],
+ "lvn": [
+  "liv",
+  "livo",
+  "livon",
+  "livonia",
+  "lva",
+  "lvn",
+  "lvo"
+ ],
+ "lvp": [
+  "liverpool",
+  "livp",
+  "lpl",
+  "lvp"
+ ],
+ "lyo": [
+  "gol",
+  "gulf of lyon",
+  "gulf of lyons",
+  "gulfofl",
+  "lyo",
+  "lyon",
+  "lyons"
+ ],
+ "mao": [
+  "mao",
+  "mat",
+  "mid",
+  "mid-atlantic ocean",
+  "midatlantic",
+  "midatlanticocean"
+ ],
+ "mar": [
+  "mar",
+  "mars",
+  "marseilles"
+ ],
+ "mos": [
+  "mos",
+  "moscow"
+ ],
+ "mun": [
+  "mun",
+  "munich"
+ ],
+ "naf": [
+  "n afr",
+  "naf",
+  "nora",
+  "north africa"
+ ],
+ "nao": [
+  "na",
+  "nao",
+  "nat",
+  "north atlantic ocean"
+ ],
+ "nap": [
+  "nap",
+  "naples"
+ ],
+ "nth": [
+  "norsea",
+  "north sea",
+  "ns",
+  "nth",
+  "nts"
+ ],
+ "nwg": [
+  "norg",
+  "norwegian",
+  "norwegian sea",
+  "norwsea",
+  "nrg",
+  "nwg"
+ ],
+ "nwy": [
+  "nor",
+  "norw",
+  "norway",
+  "nwy"
+ ],
+ "par": [
+  "par",
+  "paris"
+ ],
+ "pic": [
+  "pic",
+  "picardy"
+ ],
+ "pie": [
+  "pid",
+  "pie",
+  "piedmont"
+ ],
+ "por": [
+  "por",
+  "port",
+  "portugal"
+ ],
+ "pru": [
+  "pru",
+  "prus",
+  "prussia"
+ ],
+ "rom": [
+  "rom",
+  "rome"
+ ],
+ "ruh": [
+  "ruh",
+  "ruhr"
+ ],
+ "rum": [
+  "romania",
+  "rum",
+  "rumania"
+ ],
+ "ser": [
+  "ser",
+  "serb",
+  "serbia"
+ ],
+ "sev": [
+  "sev",
+  "seva",
+  "sevast",
+  "sevastapol",
+  "sevastopol"
+ ],
+ "sil": [
+  "sil",
+  "silesia"
+ ],
+ "ska": [
+  "ska",
+  "skag",
+  "skagerrack",
+  "skagerrak"
+ ],
+ "smy": [
+  "smy",
+  "smyrna"
+ ],
+ "spa": [
+  "spa",
+  "spain",
+  "spn"
+ ],
+ "spa/nc": [
+  "spa  (north coast)",
+  "spa (nc)",
+  "spa/nc",
+  "spain (nc)",
+  "spain (north coast)",
+  "spain/nc",
+  "spn (nc)",
+  "spn/nc"
+ ],
+ "spa/sc": [
+  "spa  (south coast)",
+  "spa (sc)",
+  "spa/sc",
+  "spa/wc",
+  "spain (sc)",
+  "spain (south coast)",
+  "spain/sc",
+  "spn (sc)",
+  "spn/sc"
+ ],
+ "stp": [
+  "st petersburg",
+  "st. petersburg",
+  "st.petersburg",
+  "stp",
+  "stpete"
+ ],
+ "stp/nc": [
+  "st petersburg (north coast)",
+  "st. petersburg/nc",
+  "stp  (north coast)",
+  "stp (nc)",
+  "stp/nc",
+  "stpete (nc)",
+  "stpete/nc"
+ ],
+ "stp/sc": [
+  "st petersburg (south coast)",
+  "st. petersburg/sc",
+  "stp  (south coast)",
+  "stp (sc)",
+  "stp/sc",
+  "stpete (sc)",
+  "stpete/sc"
+ ],
+ "swe": [
+  "swe",
+  "sweden"
+ ],
+ "syr": [
+  "syr",
+  "syria"
+ ],
+ "tri": [
+  "tri",
+  "trieste"
+ ],
+ "tun": [
+  "tun",
+  "tunis"
+ ],
+ "tus": [
+  "tus",
+  "tusc",
+  "tuscany"
+ ],
+ "tyr": [
+  "trl",
+  "tyl",
+  "tyo",
+  "tyr",
+  "tyrol",
+  "tyrolia"
+ ],
+ "tys": [
+  "tyh",
+  "tyn",
+  "tyrhh",
+  "tyrr",
+  "tyrrhenian",
+  "tyrrhenian sea",
+  "tys"
+ ],
+ "ukr": [
+  "ukr",
+  "ukraine"
+ ],
+ "ven": [
+  "ven",
+  "venice"
+ ],
+ "vie": [
+  "vie",
+  "vien",
+  "vienna"
+ ],
+ "wal": [
+  "wal",
+  "wales"
+ ],
+ "war": [
+  "war",
+  "warsaw"
+ ],
+ "wes": [
+  "wes",
+  "wes med",
+  "west",
+  "west med",
+  "western",
+  "western med",
+  "western mediterranean",
+  "westmed",
+  "wmd",
+  "wme",
+  "wmed",
+  "wms"
+ ],
+ "yor": [
+  "yonkers",
+  "yor",
+  "york",
+  "yorkshire"
+ ]
+}

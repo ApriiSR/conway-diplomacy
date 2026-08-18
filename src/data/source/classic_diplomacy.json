@@ -1,0 +1,1168 @@
+{
+ "_README": "standard Diplomacy adjacency in the province/coast schema used by this project, parsed from the python `diplomacy` package's standard.map",
+ "provinces": {
+  "adr": {
+   "type": "sea",
+   "sc": false,
+   "home": null,
+   "army_adj": [],
+   "fleet_adj": [
+    "alb",
+    "apu",
+    "ion",
+    "tri",
+    "ven"
+   ]
+  },
+  "aeg": {
+   "type": "sea",
+   "sc": false,
+   "home": null,
+   "army_adj": [],
+   "fleet_adj": [
+    "bul/sc",
+    "con",
+    "eas",
+    "gre",
+    "ion",
+    "smy"
+   ]
+  },
+  "alb": {
+   "type": "coastal",
+   "sc": false,
+   "home": null,
+   "army_adj": [
+    "gre",
+    "ser",
+    "tri"
+   ],
+   "fleet_adj": [
+    "adr",
+    "gre",
+    "ion",
+    "tri"
+   ]
+  },
+  "ank": {
+   "type": "coastal",
+   "sc": false,
+   "home": null,
+   "army_adj": [
+    "arm",
+    "con",
+    "smy"
+   ],
+   "fleet_adj": [
+    "arm",
+    "bla",
+    "con"
+   ]
+  },
+  "apu": {
+   "type": "coastal",
+   "sc": false,
+   "home": null,
+   "army_adj": [
+    "nap",
+    "rom",
+    "ven"
+   ],
+   "fleet_adj": [
+    "adr",
+    "ion",
+    "nap",
+    "ven"
+   ]
+  },
+  "arm": {
+   "type": "coastal",
+   "sc": false,
+   "home": null,
+   "army_adj": [
+    "ank",
+    "sev",
+    "smy",
+    "syr"
+   ],
+   "fleet_adj": [
+    "ank",
+    "bla",
+    "sev"
+   ]
+  },
+  "bal": {
+   "type": "sea",
+   "sc": false,
+   "home": null,
+   "army_adj": [],
+   "fleet_adj": [
+    "ber",
+    "bot",
+    "den",
+    "kie",
+    "lvn",
+    "pru",
+    "swe"
+   ]
+  },
+  "bar": {
+   "type": "sea",
+   "sc": false,
+   "home": null,
+   "army_adj": [],
+   "fleet_adj": [
+    "nwg",
+    "nwy",
+    "stp/nc"
+   ]
+  },
+  "bel": {
+   "type": "coastal",
+   "sc": false,
+   "home": null,
+   "army_adj": [
+    "bur",
+    "hol",
+    "pic",
+    "ruh"
+   ],
+   "fleet_adj": [
+    "eng",
+    "hol",
+    "nth",
+    "pic"
+   ]
+  },
+  "ber": {
+   "type": "coastal",
+   "sc": false,
+   "home": null,
+   "army_adj": [
+    "kie",
+    "mun",
+    "pru",
+    "sil"
+   ],
+   "fleet_adj": [
+    "bal",
+    "kie",
+    "pru"
+   ]
+  },
+  "bla": {
+   "type": "sea",
+   "sc": false,
+   "home": null,
+   "army_adj": [],
+   "fleet_adj": [
+    "ank",
+    "arm",
+    "bul/ec",
+    "con",
+    "rum",
+    "sev"
+   ]
+  },
+  "boh": {
+   "type": "inland",
+   "sc": false,
+   "home": null,
+   "army_adj": [
+    "gal",
+    "mun",
+    "sil",
+    "tyr",
+    "vie"
+   ],
+   "fleet_adj": []
+  },
+  "bot": {
+   "type": "sea",
+   "sc": false,
+   "home": null,
+   "army_adj": [],
+   "fleet_adj": [
+    "bal",
+    "fin",
+    "lvn",
+    "stp/sc",
+    "swe"
+   ]
+  },
+  "bre": {
+   "type": "coastal",
+   "sc": false,
+   "home": null,
+   "army_adj": [
+    "gas",
+    "par",
+    "pic"
+   ],
+   "fleet_adj": [
+    "eng",
+    "gas",
+    "mao",
+    "pic"
+   ]
+  },
+  "bud": {
+   "type": "inland",
+   "sc": false,
+   "home": null,
+   "army_adj": [
+    "gal",
+    "rum",
+    "ser",
+    "tri",
+    "vie"
+   ],
+   "fleet_adj": []
+  },
+  "bul": {
+   "type": "coastal",
+   "sc": false,
+   "home": null,
+   "army_adj": [
+    "con",
+    "gre",
+    "rum",
+    "ser"
+   ],
+   "fleet_adj": [],
+   "coasts": {
+    "ec": [
+     "bla",
+     "con",
+     "rum"
+    ],
+    "sc": [
+     "aeg",
+     "con",
+     "gre"
+    ]
+   }
+  },
+  "bur": {
+   "type": "inland",
+   "sc": false,
+   "home": null,
+   "army_adj": [
+    "bel",
+    "gas",
+    "mar",
+    "mun",
+    "par",
+    "pic",
+    "ruh"
+   ],
+   "fleet_adj": []
+  },
+  "cly": {
+   "type": "coastal",
+   "sc": false,
+   "home": null,
+   "army_adj": [
+    "edi",
+    "lvp"
+   ],
+   "fleet_adj": [
+    "edi",
+    "lvp",
+    "nao",
+    "nwg"
+   ]
+  },
+  "con": {
+   "type": "coastal",
+   "sc": false,
+   "home": null,
+   "army_adj": [
+    "ank",
+    "bul",
+    "smy"
+   ],
+   "fleet_adj": [
+    "aeg",
+    "ank",
+    "bla",
+    "bul/ec",
+    "bul/sc",
+    "smy"
+   ]
+  },
+  "den": {
+   "type": "coastal",
+   "sc": false,
+   "home": null,
+   "army_adj": [
+    "kie",
+    "swe"
+   ],
+   "fleet_adj": [
+    "bal",
+    "hel",
+    "kie",
+    "nth",
+    "ska",
+    "swe"
+   ]
+  },
+  "eas": {
+   "type": "sea",
+   "sc": false,
+   "home": null,
+   "army_adj": [],
+   "fleet_adj": [
+    "aeg",
+    "ion",
+    "smy",
+    "syr"
+   ]
+  },
+  "edi": {
+   "type": "coastal",
+   "sc": false,
+   "home": null,
+   "army_adj": [
+    "cly",
+    "lvp",
+    "yor"
+   ],
+   "fleet_adj": [
+    "cly",
+    "nth",
+    "nwg",
+    "yor"
+   ]
+  },
+  "eng": {
+   "type": "sea",
+   "sc": false,
+   "home": null,
+   "army_adj": [],
+   "fleet_adj": [
+    "bel",
+    "bre",
+    "iri",
+    "lon",
+    "mao",
+    "nth",
+    "pic",
+    "wal"
+   ]
+  },
+  "fin": {
+   "type": "coastal",
+   "sc": false,
+   "home": null,
+   "army_adj": [
+    "nwy",
+    "stp",
+    "swe"
+   ],
+   "fleet_adj": [
+    "bot",
+    "stp/sc",
+    "swe"
+   ]
+  },
+  "gal": {
+   "type": "inland",
+   "sc": false,
+   "home": null,
+   "army_adj": [
+    "boh",
+    "bud",
+    "rum",
+    "sil",
+    "ukr",
+    "vie",
+    "war"
+   ],
+   "fleet_adj": []
+  },
+  "gas": {
+   "type": "coastal",
+   "sc": false,
+   "home": null,
+   "army_adj": [
+    "bre",
+    "bur",
+    "mar",
+    "par",
+    "spa"
+   ],
+   "fleet_adj": [
+    "bre",
+    "mao",
+    "spa/nc"
+   ]
+  },
+  "gre": {
+   "type": "coastal",
+   "sc": false,
+   "home": null,
+   "army_adj": [
+    "alb",
+    "bul",
+    "ser"
+   ],
+   "fleet_adj": [
+    "aeg",
+    "alb",
+    "bul/sc",
+    "ion"
+   ]
+  },
+  "hel": {
+   "type": "sea",
+   "sc": false,
+   "home": null,
+   "army_adj": [],
+   "fleet_adj": [
+    "den",
+    "hol",
+    "kie",
+    "nth"
+   ]
+  },
+  "hol": {
+   "type": "coastal",
+   "sc": false,
+   "home": null,
+   "army_adj": [
+    "bel",
+    "kie",
+    "ruh"
+   ],
+   "fleet_adj": [
+    "bel",
+    "hel",
+    "kie",
+    "nth"
+   ]
+  },
+  "ion": {
+   "type": "sea",
+   "sc": false,
+   "home": null,
+   "army_adj": [],
+   "fleet_adj": [
+    "adr",
+    "aeg",
+    "alb",
+    "apu",
+    "eas",
+    "gre",
+    "nap",
+    "tun",
+    "tys"
+   ]
+  },
+  "iri": {
+   "type": "sea",
+   "sc": false,
+   "home": null,
+   "army_adj": [],
+   "fleet_adj": [
+    "eng",
+    "lvp",
+    "mao",
+    "nao",
+    "wal"
+   ]
+  },
+  "kie": {
+   "type": "coastal",
+   "sc": false,
+   "home": null,
+   "army_adj": [
+    "ber",
+    "den",
+    "hol",
+    "mun",
+    "ruh"
+   ],
+   "fleet_adj": [
+    "bal",
+    "ber",
+    "den",
+    "hel",
+    "hol"
+   ]
+  },
+  "lon": {
+   "type": "coastal",
+   "sc": false,
+   "home": null,
+   "army_adj": [
+    "wal",
+    "yor"
+   ],
+   "fleet_adj": [
+    "eng",
+    "nth",
+    "wal",
+    "yor"
+   ]
+  },
+  "lvn": {
+   "type": "coastal",
+   "sc": false,
+   "home": null,
+   "army_adj": [
+    "mos",
+    "pru",
+    "stp",
+    "war"
+   ],
+   "fleet_adj": [
+    "bal",
+    "bot",
+    "pru",
+    "stp/sc"
+   ]
+  },
+  "lvp": {
+   "type": "coastal",
+   "sc": false,
+   "home": null,
+   "army_adj": [
+    "cly",
+    "edi",
+    "wal",
+    "yor"
+   ],
+   "fleet_adj": [
+    "cly",
+    "iri",
+    "nao",
+    "wal"
+   ]
+  },
+  "lyo": {
+   "type": "sea",
+   "sc": false,
+   "home": null,
+   "army_adj": [],
+   "fleet_adj": [
+    "mar",
+    "pie",
+    "spa/sc",
+    "tus",
+    "tys",
+    "wes"
+   ]
+  },
+  "mao": {
+   "type": "sea",
+   "sc": false,
+   "home": null,
+   "army_adj": [],
+   "fleet_adj": [
+    "bre",
+    "eng",
+    "gas",
+    "iri",
+    "naf",
+    "nao",
+    "por",
+    "spa/nc",
+    "spa/sc",
+    "wes"
+   ]
+  },
+  "mar": {
+   "type": "coastal",
+   "sc": false,
+   "home": null,
+   "army_adj": [
+    "bur",
+    "gas",
+    "pie",
+    "spa"
+   ],
+   "fleet_adj": [
+    "lyo",
+    "pie",
+    "spa/sc",
+    "swi"
+   ]
+  },
+  "mos": {
+   "type": "inland",
+   "sc": false,
+   "home": null,
+   "army_adj": [
+    "lvn",
+    "sev",
+    "stp",
+    "ukr",
+    "war"
+   ],
+   "fleet_adj": []
+  },
+  "mun": {
+   "type": "inland",
+   "sc": false,
+   "home": null,
+   "army_adj": [
+    "ber",
+    "boh",
+    "bur",
+    "kie",
+    "ruh",
+    "sil",
+    "tyr"
+   ],
+   "fleet_adj": []
+  },
+  "naf": {
+   "type": "coastal",
+   "sc": false,
+   "home": null,
+   "army_adj": [
+    "tun"
+   ],
+   "fleet_adj": [
+    "mao",
+    "tun",
+    "wes"
+   ]
+  },
+  "nao": {
+   "type": "sea",
+   "sc": false,
+   "home": null,
+   "army_adj": [],
+   "fleet_adj": [
+    "cly",
+    "iri",
+    "lvp",
+    "mao",
+    "nwg"
+   ]
+  },
+  "nap": {
+   "type": "coastal",
+   "sc": false,
+   "home": null,
+   "army_adj": [
+    "apu",
+    "rom"
+   ],
+   "fleet_adj": [
+    "apu",
+    "ion",
+    "rom",
+    "tys"
+   ]
+  },
+  "nwy": {
+   "type": "coastal",
+   "sc": false,
+   "home": null,
+   "army_adj": [
+    "fin",
+    "stp",
+    "swe"
+   ],
+   "fleet_adj": [
+    "bar",
+    "nth",
+    "nwg",
+    "ska",
+    "stp/nc",
+    "swe"
+   ]
+  },
+  "nth": {
+   "type": "sea",
+   "sc": false,
+   "home": null,
+   "army_adj": [],
+   "fleet_adj": [
+    "bel",
+    "den",
+    "edi",
+    "eng",
+    "hel",
+    "hol",
+    "lon",
+    "nwg",
+    "nwy",
+    "ska",
+    "yor"
+   ]
+  },
+  "nwg": {
+   "type": "sea",
+   "sc": false,
+   "home": null,
+   "army_adj": [],
+   "fleet_adj": [
+    "bar",
+    "cly",
+    "edi",
+    "nao",
+    "nth",
+    "nwy"
+   ]
+  },
+  "par": {
+   "type": "inland",
+   "sc": false,
+   "home": null,
+   "army_adj": [
+    "bre",
+    "bur",
+    "gas",
+    "pic"
+   ],
+   "fleet_adj": []
+  },
+  "pic": {
+   "type": "coastal",
+   "sc": false,
+   "home": null,
+   "army_adj": [
+    "bel",
+    "bre",
+    "bur",
+    "par"
+   ],
+   "fleet_adj": [
+    "bel",
+    "bre",
+    "eng"
+   ]
+  },
+  "pie": {
+   "type": "coastal",
+   "sc": false,
+   "home": null,
+   "army_adj": [
+    "mar",
+    "tus",
+    "tyr",
+    "ven"
+   ],
+   "fleet_adj": [
+    "lyo",
+    "mar",
+    "swi",
+    "tus"
+   ]
+  },
+  "por": {
+   "type": "coastal",
+   "sc": false,
+   "home": null,
+   "army_adj": [
+    "spa"
+   ],
+   "fleet_adj": [
+    "mao",
+    "spa/nc",
+    "spa/sc"
+   ]
+  },
+  "pru": {
+   "type": "coastal",
+   "sc": false,
+   "home": null,
+   "army_adj": [
+    "ber",
+    "lvn",
+    "sil",
+    "war"
+   ],
+   "fleet_adj": [
+    "bal",
+    "ber",
+    "lvn"
+   ]
+  },
+  "rom": {
+   "type": "coastal",
+   "sc": false,
+   "home": null,
+   "army_adj": [
+    "apu",
+    "nap",
+    "tus",
+    "ven"
+   ],
+   "fleet_adj": [
+    "nap",
+    "tus",
+    "tys"
+   ]
+  },
+  "ruh": {
+   "type": "inland",
+   "sc": false,
+   "home": null,
+   "army_adj": [
+    "bel",
+    "bur",
+    "hol",
+    "kie",
+    "mun"
+   ],
+   "fleet_adj": []
+  },
+  "rum": {
+   "type": "coastal",
+   "sc": false,
+   "home": null,
+   "army_adj": [
+    "bud",
+    "bul",
+    "gal",
+    "ser",
+    "sev",
+    "ukr"
+   ],
+   "fleet_adj": [
+    "bla",
+    "bul/ec",
+    "sev"
+   ]
+  },
+  "ser": {
+   "type": "inland",
+   "sc": false,
+   "home": null,
+   "army_adj": [
+    "alb",
+    "bud",
+    "bul",
+    "gre",
+    "rum",
+    "tri"
+   ],
+   "fleet_adj": []
+  },
+  "sev": {
+   "type": "coastal",
+   "sc": false,
+   "home": null,
+   "army_adj": [
+    "arm",
+    "mos",
+    "rum",
+    "ukr"
+   ],
+   "fleet_adj": [
+    "arm",
+    "bla",
+    "rum"
+   ]
+  },
+  "sil": {
+   "type": "inland",
+   "sc": false,
+   "home": null,
+   "army_adj": [
+    "ber",
+    "boh",
+    "gal",
+    "mun",
+    "pru",
+    "war"
+   ],
+   "fleet_adj": []
+  },
+  "ska": {
+   "type": "sea",
+   "sc": false,
+   "home": null,
+   "army_adj": [],
+   "fleet_adj": [
+    "den",
+    "nth",
+    "nwy",
+    "swe"
+   ]
+  },
+  "smy": {
+   "type": "coastal",
+   "sc": false,
+   "home": null,
+   "army_adj": [
+    "ank",
+    "arm",
+    "con",
+    "syr"
+   ],
+   "fleet_adj": [
+    "aeg",
+    "con",
+    "eas",
+    "syr"
+   ]
+  },
+  "spa": {
+   "type": "coastal",
+   "sc": false,
+   "home": null,
+   "army_adj": [
+    "gas",
+    "mar",
+    "por"
+   ],
+   "fleet_adj": [],
+   "coasts": {
+    "nc": [
+     "gas",
+     "mao",
+     "por"
+    ],
+    "sc": [
+     "lyo",
+     "mao",
+     "mar",
+     "por",
+     "wes"
+    ]
+   }
+  },
+  "stp": {
+   "type": "coastal",
+   "sc": false,
+   "home": null,
+   "army_adj": [
+    "fin",
+    "lvn",
+    "mos",
+    "nwy"
+   ],
+   "fleet_adj": [],
+   "coasts": {
+    "nc": [
+     "bar",
+     "nwy"
+    ],
+    "sc": [
+     "bot",
+     "fin",
+     "lvn"
+    ]
+   }
+  },
+  "swe": {
+   "type": "coastal",
+   "sc": false,
+   "home": null,
+   "army_adj": [
+    "den",
+    "fin",
+    "nwy"
+   ],
+   "fleet_adj": [
+    "bal",
+    "bot",
+    "den",
+    "fin",
+    "nwy",
+    "ska"
+   ]
+  },
+  "syr": {
+   "type": "coastal",
+   "sc": false,
+   "home": null,
+   "army_adj": [
+    "arm",
+    "smy"
+   ],
+   "fleet_adj": [
+    "eas",
+    "smy"
+   ]
+  },
+  "tri": {
+   "type": "coastal",
+   "sc": false,
+   "home": null,
+   "army_adj": [
+    "alb",
+    "bud",
+    "ser",
+    "tyr",
+    "ven",
+    "vie"
+   ],
+   "fleet_adj": [
+    "adr",
+    "alb",
+    "ven"
+   ]
+  },
+  "tun": {
+   "type": "coastal",
+   "sc": false,
+   "home": null,
+   "army_adj": [
+    "naf"
+   ],
+   "fleet_adj": [
+    "ion",
+    "naf",
+    "tys",
+    "wes"
+   ]
+  },
+  "tus": {
+   "type": "coastal",
+   "sc": false,
+   "home": null,
+   "army_adj": [
+    "pie",
+    "rom",
+    "ven"
+   ],
+   "fleet_adj": [
+    "lyo",
+    "pie",
+    "rom",
+    "tys"
+   ]
+  },
+  "tyr": {
+   "type": "inland",
+   "sc": false,
+   "home": null,
+   "army_adj": [
+    "boh",
+    "mun",
+    "pie",
+    "tri",
+    "ven",
+    "vie"
+   ],
+   "fleet_adj": []
+  },
+  "tys": {
+   "type": "sea",
+   "sc": false,
+   "home": null,
+   "army_adj": [],
+   "fleet_adj": [
+    "ion",
+    "lyo",
+    "nap",
+    "rom",
+    "tun",
+    "tus",
+    "wes"
+   ]
+  },
+  "ukr": {
+   "type": "inland",
+   "sc": false,
+   "home": null,
+   "army_adj": [
+    "gal",
+    "mos",
+    "rum",
+    "sev",
+    "war"
+   ],
+   "fleet_adj": []
+  },
+  "ven": {
+   "type": "coastal",
+   "sc": false,
+   "home": null,
+   "army_adj": [
+    "apu",
+    "pie",
+    "rom",
+    "tri",
+    "tus",
+    "tyr"
+   ],
+   "fleet_adj": [
+    "adr",
+    "apu",
+    "tri"
+   ]
+  },
+  "vie": {
+   "type": "inland",
+   "sc": false,
+   "home": null,
+   "army_adj": [
+    "boh",
+    "bud",
+    "gal",
+    "tri",
+    "tyr"
+   ],
+   "fleet_adj": []
+  },
+  "wal": {
+   "type": "coastal",
+   "sc": false,
+   "home": null,
+   "army_adj": [
+    "lon",
+    "lvp",
+    "yor"
+   ],
+   "fleet_adj": [
+    "eng",
+    "iri",
+    "lon",
+    "lvp"
+   ]
+  },
+  "war": {
+   "type": "inland",
+   "sc": false,
+   "home": null,
+   "army_adj": [
+    "gal",
+    "lvn",
+    "mos",
+    "pru",
+    "sil",
+    "ukr"
+   ],
+   "fleet_adj": []
+  },
+  "wes": {
+   "type": "sea",
+   "sc": false,
+   "home": null,
+   "army_adj": [],
+   "fleet_adj": [
+    "lyo",
+    "mao",
+    "naf",
+    "spa/sc",
+    "tun",
+    "tys"
+   ]
+  },
+  "yor": {
+   "type": "coastal",
+   "sc": false,
+   "home": null,
+   "army_adj": [
+    "edi",
+    "lon",
+    "lvp",
+    "wal"
+   ],
+   "fleet_adj": [
+    "edi",
+    "lon",
+    "nth"
+   ]
+  }
+ }
+}

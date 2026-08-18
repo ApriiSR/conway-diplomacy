@@ -1,0 +1,2226 @@
+{
+ "provinces": {
+  "adr": {
+   "id": "adr",
+   "name": "Adriatic Sea",
+   "type": "sea",
+   "sc": false,
+   "home": null,
+   "coasts": [],
+   "armyAdj": [],
+   "fleetAdj": {
+    "": [
+     "alb",
+     "apu",
+     "ion",
+     "tri",
+     "ven"
+    ]
+   }
+  },
+  "aeg": {
+   "id": "aeg",
+   "name": "Aegean Sea",
+   "type": "sea",
+   "sc": false,
+   "home": null,
+   "coasts": [],
+   "armyAdj": [],
+   "fleetAdj": {
+    "": [
+     "bul/sc",
+     "con",
+     "eas",
+     "gre",
+     "ion",
+     "smy"
+    ]
+   }
+  },
+  "alb": {
+   "id": "alb",
+   "name": "Albania",
+   "type": "coastal",
+   "sc": false,
+   "home": null,
+   "coasts": [],
+   "armyAdj": [
+    "gre",
+    "ser",
+    "tri"
+   ],
+   "fleetAdj": {
+    "": [
+     "adr",
+     "gre",
+     "ion",
+     "tri"
+    ]
+   }
+  },
+  "ank": {
+   "id": "ank",
+   "name": "Ankara",
+   "type": "coastal",
+   "sc": true,
+   "home": "TURKEY",
+   "coasts": [],
+   "armyAdj": [
+    "arm",
+    "con",
+    "smy"
+   ],
+   "fleetAdj": {
+    "": [
+     "arm",
+     "bla",
+     "con"
+    ]
+   }
+  },
+  "apu": {
+   "id": "apu",
+   "name": "Apulia",
+   "type": "coastal",
+   "sc": false,
+   "home": null,
+   "coasts": [],
+   "armyAdj": [
+    "nap",
+    "rom",
+    "ven"
+   ],
+   "fleetAdj": {
+    "": [
+     "adr",
+     "ion",
+     "nap",
+     "ven"
+    ]
+   }
+  },
+  "arm": {
+   "id": "arm",
+   "name": "Armenia",
+   "type": "coastal",
+   "sc": false,
+   "home": null,
+   "coasts": [],
+   "armyAdj": [
+    "ank",
+    "sev",
+    "smy",
+    "syr"
+   ],
+   "fleetAdj": {
+    "": [
+     "ank",
+     "bla",
+     "sev"
+    ]
+   }
+  },
+  "bal": {
+   "id": "bal",
+   "name": "Baltic Sea",
+   "type": "sea",
+   "sc": false,
+   "home": null,
+   "coasts": [],
+   "armyAdj": [],
+   "fleetAdj": {
+    "": [
+     "ber",
+     "bot",
+     "den",
+     "kie",
+     "lvn",
+     "pru",
+     "swe"
+    ]
+   }
+  },
+  "bar": {
+   "id": "bar",
+   "name": "Barents Sea",
+   "type": "sea",
+   "sc": false,
+   "home": null,
+   "coasts": [],
+   "armyAdj": [],
+   "fleetAdj": {
+    "": [
+     "nwg",
+     "nwy",
+     "stp/nc"
+    ]
+   }
+  },
+  "bel": {
+   "id": "bel",
+   "name": "Belgium",
+   "type": "coastal",
+   "sc": true,
+   "home": null,
+   "coasts": [],
+   "armyAdj": [
+    "bur",
+    "hol",
+    "pic",
+    "ruh"
+   ],
+   "fleetAdj": {
+    "": [
+     "eng",
+     "hol",
+     "nth",
+     "pic"
+    ]
+   }
+  },
+  "ber": {
+   "id": "ber",
+   "name": "Berlin",
+   "type": "coastal",
+   "sc": true,
+   "home": "GERMANY",
+   "coasts": [],
+   "armyAdj": [
+    "kie",
+    "mun",
+    "pru",
+    "sil"
+   ],
+   "fleetAdj": {
+    "": [
+     "bal",
+     "kie",
+     "pru"
+    ]
+   }
+  },
+  "bla": {
+   "id": "bla",
+   "name": "Black Sea",
+   "type": "sea",
+   "sc": false,
+   "home": null,
+   "coasts": [],
+   "armyAdj": [],
+   "fleetAdj": {
+    "": [
+     "ank",
+     "arm",
+     "bul/ec",
+     "con",
+     "rum",
+     "sev"
+    ]
+   }
+  },
+  "boh": {
+   "id": "boh",
+   "name": "Bohemia",
+   "type": "inland",
+   "sc": false,
+   "home": null,
+   "coasts": [],
+   "armyAdj": [
+    "gal",
+    "mun",
+    "sil",
+    "tyr",
+    "vie"
+   ],
+   "fleetAdj": {}
+  },
+  "bot": {
+   "id": "bot",
+   "name": "Gulf of Bothnia",
+   "type": "sea",
+   "sc": false,
+   "home": null,
+   "coasts": [],
+   "armyAdj": [],
+   "fleetAdj": {
+    "": [
+     "bal",
+     "fin",
+     "lvn",
+     "stp/sc",
+     "swe"
+    ]
+   }
+  },
+  "bre": {
+   "id": "bre",
+   "name": "Brest",
+   "type": "coastal",
+   "sc": true,
+   "home": "FRANCE",
+   "coasts": [],
+   "armyAdj": [
+    "gas",
+    "par",
+    "pic"
+   ],
+   "fleetAdj": {
+    "": [
+     "eng",
+     "gas",
+     "mao",
+     "pic"
+    ]
+   }
+  },
+  "bud": {
+   "id": "bud",
+   "name": "Budapest",
+   "type": "inland",
+   "sc": true,
+   "home": "AUSTRIA",
+   "coasts": [],
+   "armyAdj": [
+    "gal",
+    "rum",
+    "ser",
+    "tri",
+    "vie"
+   ],
+   "fleetAdj": {}
+  },
+  "bul": {
+   "id": "bul",
+   "name": "Bulgaria",
+   "type": "coastal",
+   "sc": true,
+   "home": null,
+   "coasts": [
+    "ec",
+    "sc"
+   ],
+   "armyAdj": [
+    "con",
+    "gre",
+    "rum",
+    "ser"
+   ],
+   "fleetAdj": {
+    "ec": [
+     "bla",
+     "con",
+     "rum"
+    ],
+    "sc": [
+     "aeg",
+     "con",
+     "gre"
+    ]
+   }
+  },
+  "bur": {
+   "id": "bur",
+   "name": "Burgundy",
+   "type": "inland",
+   "sc": false,
+   "home": null,
+   "coasts": [],
+   "armyAdj": [
+    "bel",
+    "gas",
+    "mar",
+    "mun",
+    "par",
+    "pic",
+    "ruh"
+   ],
+   "fleetAdj": {}
+  },
+  "cly": {
+   "id": "cly",
+   "name": "Clyde",
+   "type": "coastal",
+   "sc": false,
+   "home": null,
+   "coasts": [],
+   "armyAdj": [
+    "edi",
+    "lvp"
+   ],
+   "fleetAdj": {
+    "": [
+     "edi",
+     "lvp",
+     "nao",
+     "nwg"
+    ]
+   }
+  },
+  "con": {
+   "id": "con",
+   "name": "Constantinople",
+   "type": "coastal",
+   "sc": true,
+   "home": "TURKEY",
+   "coasts": [],
+   "armyAdj": [
+    "ank",
+    "bul",
+    "smy"
+   ],
+   "fleetAdj": {
+    "": [
+     "aeg",
+     "ank",
+     "bla",
+     "bul/ec",
+     "bul/sc",
+     "smy"
+    ]
+   }
+  },
+  "den": {
+   "id": "den",
+   "name": "Denmark",
+   "type": "coastal",
+   "sc": true,
+   "home": null,
+   "coasts": [],
+   "armyAdj": [
+    "kie",
+    "swe"
+   ],
+   "fleetAdj": {
+    "": [
+     "bal",
+     "hel",
+     "kie",
+     "nth",
+     "ska",
+     "swe"
+    ]
+   }
+  },
+  "eas": {
+   "id": "eas",
+   "name": "Eastern Mediterranean",
+   "type": "sea",
+   "sc": false,
+   "home": null,
+   "coasts": [],
+   "armyAdj": [],
+   "fleetAdj": {
+    "": [
+     "aeg",
+     "ion",
+     "smy",
+     "syr"
+    ]
+   }
+  },
+  "edi": {
+   "id": "edi",
+   "name": "Edinburgh",
+   "type": "coastal",
+   "sc": true,
+   "home": "ENGLAND",
+   "coasts": [],
+   "armyAdj": [
+    "cly",
+    "lvp",
+    "yor"
+   ],
+   "fleetAdj": {
+    "": [
+     "cly",
+     "nth",
+     "nwg",
+     "yor"
+    ]
+   }
+  },
+  "eng": {
+   "id": "eng",
+   "name": "English Channel",
+   "type": "sea",
+   "sc": false,
+   "home": null,
+   "coasts": [],
+   "armyAdj": [],
+   "fleetAdj": {
+    "": [
+     "bel",
+     "bre",
+     "iri",
+     "lon",
+     "mao",
+     "nth",
+     "pic",
+     "wal"
+    ]
+   }
+  },
+  "fin": {
+   "id": "fin",
+   "name": "Finland",
+   "type": "coastal",
+   "sc": false,
+   "home": null,
+   "coasts": [],
+   "armyAdj": [
+    "nwy",
+    "stp",
+    "swe"
+   ],
+   "fleetAdj": {
+    "": [
+     "bot",
+     "stp/sc",
+     "swe"
+    ]
+   }
+  },
+  "gal": {
+   "id": "gal",
+   "name": "Galicia",
+   "type": "inland",
+   "sc": false,
+   "home": null,
+   "coasts": [],
+   "armyAdj": [
+    "boh",
+    "bud",
+    "rum",
+    "sil",
+    "ukr",
+    "vie",
+    "war"
+   ],
+   "fleetAdj": {}
+  },
+  "gas": {
+   "id": "gas",
+   "name": "Gascony",
+   "type": "coastal",
+   "sc": false,
+   "home": null,
+   "coasts": [],
+   "armyAdj": [
+    "bre",
+    "bur",
+    "mar",
+    "par",
+    "spa"
+   ],
+   "fleetAdj": {
+    "": [
+     "bre",
+     "mao",
+     "spa/nc"
+    ]
+   }
+  },
+  "gre": {
+   "id": "gre",
+   "name": "Greece",
+   "type": "coastal",
+   "sc": true,
+   "home": null,
+   "coasts": [],
+   "armyAdj": [
+    "alb",
+    "bul",
+    "ser"
+   ],
+   "fleetAdj": {
+    "": [
+     "aeg",
+     "alb",
+     "bul/sc",
+     "ion"
+    ]
+   }
+  },
+  "hel": {
+   "id": "hel",
+   "name": "Helgoland Bight",
+   "type": "sea",
+   "sc": false,
+   "home": null,
+   "coasts": [],
+   "armyAdj": [],
+   "fleetAdj": {
+    "": [
+     "den",
+     "hol",
+     "kie",
+     "nth"
+    ]
+   }
+  },
+  "hol": {
+   "id": "hol",
+   "name": "Holland",
+   "type": "coastal",
+   "sc": true,
+   "home": null,
+   "coasts": [],
+   "armyAdj": [
+    "bel",
+    "kie",
+    "ruh"
+   ],
+   "fleetAdj": {
+    "": [
+     "bel",
+     "hel",
+     "kie",
+     "nth"
+    ]
+   }
+  },
+  "ion": {
+   "id": "ion",
+   "name": "Ionian Sea",
+   "type": "sea",
+   "sc": false,
+   "home": null,
+   "coasts": [],
+   "armyAdj": [],
+   "fleetAdj": {
+    "": [
+     "adr",
+     "aeg",
+     "alb",
+     "apu",
+     "eas",
+     "gre",
+     "nap",
+     "tun",
+     "tys"
+    ]
+   }
+  },
+  "iri": {
+   "id": "iri",
+   "name": "Irish Sea",
+   "type": "sea",
+   "sc": false,
+   "home": null,
+   "coasts": [],
+   "armyAdj": [],
+   "fleetAdj": {
+    "": [
+     "eng",
+     "lvp",
+     "mao",
+     "nao",
+     "wal"
+    ]
+   }
+  },
+  "kie": {
+   "id": "kie",
+   "name": "Kiel",
+   "type": "coastal",
+   "sc": true,
+   "home": "GERMANY",
+   "coasts": [],
+   "armyAdj": [
+    "ber",
+    "den",
+    "hol",
+    "mun",
+    "ruh"
+   ],
+   "fleetAdj": {
+    "": [
+     "bal",
+     "ber",
+     "den",
+     "hel",
+     "hol"
+    ]
+   }
+  },
+  "lon": {
+   "id": "lon",
+   "name": "London",
+   "type": "coastal",
+   "sc": true,
+   "home": "ENGLAND",
+   "coasts": [],
+   "armyAdj": [
+    "wal",
+    "yor"
+   ],
+   "fleetAdj": {
+    "": [
+     "eng",
+     "nth",
+     "wal",
+     "yor"
+    ]
+   }
+  },
+  "lvn": {
+   "id": "lvn",
+   "name": "Livonia",
+   "type": "coastal",
+   "sc": false,
+   "home": null,
+   "coasts": [],
+   "armyAdj": [
+    "mos",
+    "pru",
+    "stp",
+    "war"
+   ],
+   "fleetAdj": {
+    "": [
+     "bal",
+     "bot",
+     "pru",
+     "stp/sc"
+    ]
+   }
+  },
+  "lvp": {
+   "id": "lvp",
+   "name": "Liverpool",
+   "type": "coastal",
+   "sc": true,
+   "home": "ENGLAND",
+   "coasts": [],
+   "armyAdj": [
+    "cly",
+    "edi",
+    "wal",
+    "yor"
+   ],
+   "fleetAdj": {
+    "": [
+     "cly",
+     "iri",
+     "nao",
+     "wal"
+    ]
+   }
+  },
+  "lyo": {
+   "id": "lyo",
+   "name": "Gulf of Lyon",
+   "type": "sea",
+   "sc": false,
+   "home": null,
+   "coasts": [],
+   "armyAdj": [],
+   "fleetAdj": {
+    "": [
+     "mar",
+     "pie",
+     "spa/sc",
+     "tus",
+     "tys",
+     "wes"
+    ]
+   }
+  },
+  "mao": {
+   "id": "mao",
+   "name": "Mid-Atlantic Ocean",
+   "type": "sea",
+   "sc": false,
+   "home": null,
+   "coasts": [],
+   "armyAdj": [],
+   "fleetAdj": {
+    "": [
+     "bre",
+     "eng",
+     "gas",
+     "iri",
+     "naf",
+     "nao",
+     "por",
+     "spa/nc",
+     "spa/sc",
+     "wes"
+    ]
+   }
+  },
+  "mar": {
+   "id": "mar",
+   "name": "Marseilles",
+   "type": "coastal",
+   "sc": true,
+   "home": "FRANCE",
+   "coasts": [],
+   "armyAdj": [
+    "bur",
+    "gas",
+    "pie",
+    "spa"
+   ],
+   "fleetAdj": {
+    "": [
+     "lyo",
+     "pie",
+     "spa/sc"
+    ]
+   }
+  },
+  "mos": {
+   "id": "mos",
+   "name": "Moscow",
+   "type": "inland",
+   "sc": true,
+   "home": "RUSSIA",
+   "coasts": [],
+   "armyAdj": [
+    "lvn",
+    "sev",
+    "stp",
+    "ukr",
+    "war"
+   ],
+   "fleetAdj": {}
+  },
+  "mun": {
+   "id": "mun",
+   "name": "Munich",
+   "type": "inland",
+   "sc": true,
+   "home": "GERMANY",
+   "coasts": [],
+   "armyAdj": [
+    "ber",
+    "boh",
+    "bur",
+    "kie",
+    "ruh",
+    "sil",
+    "tyr"
+   ],
+   "fleetAdj": {}
+  },
+  "naf": {
+   "id": "naf",
+   "name": "North Africa",
+   "type": "coastal",
+   "sc": false,
+   "home": null,
+   "coasts": [],
+   "armyAdj": [
+    "tun"
+   ],
+   "fleetAdj": {
+    "": [
+     "mao",
+     "tun",
+     "wes"
+    ]
+   }
+  },
+  "nao": {
+   "id": "nao",
+   "name": "North Atlantic Ocean",
+   "type": "sea",
+   "sc": false,
+   "home": null,
+   "coasts": [],
+   "armyAdj": [],
+   "fleetAdj": {
+    "": [
+     "cly",
+     "iri",
+     "lvp",
+     "mao",
+     "nwg"
+    ]
+   }
+  },
+  "nap": {
+   "id": "nap",
+   "name": "Naples",
+   "type": "coastal",
+   "sc": true,
+   "home": "ITALY",
+   "coasts": [],
+   "armyAdj": [
+    "apu",
+    "rom"
+   ],
+   "fleetAdj": {
+    "": [
+     "apu",
+     "ion",
+     "rom",
+     "tys"
+    ]
+   }
+  },
+  "nth": {
+   "id": "nth",
+   "name": "North Sea",
+   "type": "sea",
+   "sc": false,
+   "home": null,
+   "coasts": [],
+   "armyAdj": [],
+   "fleetAdj": {
+    "": [
+     "bel",
+     "den",
+     "edi",
+     "eng",
+     "hel",
+     "hol",
+     "lon",
+     "nwg",
+     "nwy",
+     "ska",
+     "yor"
+    ]
+   }
+  },
+  "nwg": {
+   "id": "nwg",
+   "name": "Norwegian Sea",
+   "type": "sea",
+   "sc": false,
+   "home": null,
+   "coasts": [],
+   "armyAdj": [],
+   "fleetAdj": {
+    "": [
+     "bar",
+     "cly",
+     "edi",
+     "nao",
+     "nth",
+     "nwy"
+    ]
+   }
+  },
+  "nwy": {
+   "id": "nwy",
+   "name": "Norway",
+   "type": "coastal",
+   "sc": true,
+   "home": null,
+   "coasts": [],
+   "armyAdj": [
+    "fin",
+    "stp",
+    "swe"
+   ],
+   "fleetAdj": {
+    "": [
+     "bar",
+     "nth",
+     "nwg",
+     "ska",
+     "stp/nc",
+     "swe"
+    ]
+   }
+  },
+  "par": {
+   "id": "par",
+   "name": "Paris",
+   "type": "inland",
+   "sc": true,
+   "home": "FRANCE",
+   "coasts": [],
+   "armyAdj": [
+    "bre",
+    "bur",
+    "gas",
+    "pic"
+   ],
+   "fleetAdj": {}
+  },
+  "pic": {
+   "id": "pic",
+   "name": "Picardy",
+   "type": "coastal",
+   "sc": false,
+   "home": null,
+   "coasts": [],
+   "armyAdj": [
+    "bel",
+    "bre",
+    "bur",
+    "par"
+   ],
+   "fleetAdj": {
+    "": [
+     "bel",
+     "bre",
+     "eng"
+    ]
+   }
+  },
+  "pie": {
+   "id": "pie",
+   "name": "Piedmont",
+   "type": "coastal",
+   "sc": false,
+   "home": null,
+   "coasts": [],
+   "armyAdj": [
+    "mar",
+    "tus",
+    "tyr",
+    "ven"
+   ],
+   "fleetAdj": {
+    "": [
+     "lyo",
+     "mar",
+     "tus"
+    ]
+   }
+  },
+  "por": {
+   "id": "por",
+   "name": "Portugal",
+   "type": "coastal",
+   "sc": true,
+   "home": null,
+   "coasts": [],
+   "armyAdj": [
+    "spa"
+   ],
+   "fleetAdj": {
+    "": [
+     "mao",
+     "spa/nc",
+     "spa/sc"
+    ]
+   }
+  },
+  "pru": {
+   "id": "pru",
+   "name": "Prussia",
+   "type": "coastal",
+   "sc": false,
+   "home": null,
+   "coasts": [],
+   "armyAdj": [
+    "ber",
+    "lvn",
+    "sil",
+    "war"
+   ],
+   "fleetAdj": {
+    "": [
+     "bal",
+     "ber",
+     "lvn"
+    ]
+   }
+  },
+  "rom": {
+   "id": "rom",
+   "name": "Rome",
+   "type": "coastal",
+   "sc": true,
+   "home": "ITALY",
+   "coasts": [],
+   "armyAdj": [
+    "apu",
+    "nap",
+    "tus",
+    "ven"
+   ],
+   "fleetAdj": {
+    "": [
+     "nap",
+     "tus",
+     "tys"
+    ]
+   }
+  },
+  "ruh": {
+   "id": "ruh",
+   "name": "Ruhr",
+   "type": "inland",
+   "sc": false,
+   "home": null,
+   "coasts": [],
+   "armyAdj": [
+    "bel",
+    "bur",
+    "hol",
+    "kie",
+    "mun"
+   ],
+   "fleetAdj": {}
+  },
+  "rum": {
+   "id": "rum",
+   "name": "Rumania",
+   "type": "coastal",
+   "sc": true,
+   "home": null,
+   "coasts": [],
+   "armyAdj": [
+    "bud",
+    "bul",
+    "gal",
+    "ser",
+    "sev",
+    "ukr"
+   ],
+   "fleetAdj": {
+    "": [
+     "bla",
+     "bul/ec",
+     "sev"
+    ]
+   }
+  },
+  "ser": {
+   "id": "ser",
+   "name": "Serbia",
+   "type": "inland",
+   "sc": true,
+   "home": null,
+   "coasts": [],
+   "armyAdj": [
+    "alb",
+    "bud",
+    "bul",
+    "gre",
+    "rum",
+    "tri"
+   ],
+   "fleetAdj": {}
+  },
+  "sev": {
+   "id": "sev",
+   "name": "Sevastopol",
+   "type": "coastal",
+   "sc": true,
+   "home": "RUSSIA",
+   "coasts": [],
+   "armyAdj": [
+    "arm",
+    "mos",
+    "rum",
+    "ukr"
+   ],
+   "fleetAdj": {
+    "": [
+     "arm",
+     "bla",
+     "rum"
+    ]
+   }
+  },
+  "sil": {
+   "id": "sil",
+   "name": "Silesia",
+   "type": "inland",
+   "sc": false,
+   "home": null,
+   "coasts": [],
+   "armyAdj": [
+    "ber",
+    "boh",
+    "gal",
+    "mun",
+    "pru",
+    "war"
+   ],
+   "fleetAdj": {}
+  },
+  "ska": {
+   "id": "ska",
+   "name": "Skagerrak",
+   "type": "sea",
+   "sc": false,
+   "home": null,
+   "coasts": [],
+   "armyAdj": [],
+   "fleetAdj": {
+    "": [
+     "den",
+     "nth",
+     "nwy",
+     "swe"
+    ]
+   }
+  },
+  "smy": {
+   "id": "smy",
+   "name": "Smyrna",
+   "type": "coastal",
+   "sc": true,
+   "home": "TURKEY",
+   "coasts": [],
+   "armyAdj": [
+    "ank",
+    "arm",
+    "con",
+    "syr"
+   ],
+   "fleetAdj": {
+    "": [
+     "aeg",
+     "con",
+     "eas",
+     "syr"
+    ]
+   }
+  },
+  "spa": {
+   "id": "spa",
+   "name": "Spain",
+   "type": "coastal",
+   "sc": true,
+   "home": null,
+   "coasts": [
+    "nc",
+    "sc"
+   ],
+   "armyAdj": [
+    "gas",
+    "mar",
+    "por"
+   ],
+   "fleetAdj": {
+    "nc": [
+     "gas",
+     "mao",
+     "por"
+    ],
+    "sc": [
+     "lyo",
+     "mao",
+     "mar",
+     "por",
+     "wes"
+    ]
+   }
+  },
+  "stp": {
+   "id": "stp",
+   "name": "St Petersburg",
+   "type": "coastal",
+   "sc": true,
+   "home": "RUSSIA",
+   "coasts": [
+    "nc",
+    "sc"
+   ],
+   "armyAdj": [
+    "fin",
+    "lvn",
+    "mos",
+    "nwy"
+   ],
+   "fleetAdj": {
+    "nc": [
+     "bar",
+     "nwy"
+    ],
+    "sc": [
+     "bot",
+     "fin",
+     "lvn"
+    ]
+   }
+  },
+  "swe": {
+   "id": "swe",
+   "name": "Sweden",
+   "type": "coastal",
+   "sc": true,
+   "home": null,
+   "coasts": [],
+   "armyAdj": [
+    "den",
+    "fin",
+    "nwy"
+   ],
+   "fleetAdj": {
+    "": [
+     "bal",
+     "bot",
+     "den",
+     "fin",
+     "nwy",
+     "ska"
+    ]
+   }
+  },
+  "syr": {
+   "id": "syr",
+   "name": "Syria",
+   "type": "coastal",
+   "sc": false,
+   "home": null,
+   "coasts": [],
+   "armyAdj": [
+    "arm",
+    "smy"
+   ],
+   "fleetAdj": {
+    "": [
+     "eas",
+     "smy"
+    ]
+   }
+  },
+  "tri": {
+   "id": "tri",
+   "name": "Trieste",
+   "type": "coastal",
+   "sc": true,
+   "home": "AUSTRIA",
+   "coasts": [],
+   "armyAdj": [
+    "alb",
+    "bud",
+    "ser",
+    "tyr",
+    "ven",
+    "vie"
+   ],
+   "fleetAdj": {
+    "": [
+     "adr",
+     "alb",
+     "ven"
+    ]
+   }
+  },
+  "tun": {
+   "id": "tun",
+   "name": "Tunis",
+   "type": "coastal",
+   "sc": true,
+   "home": null,
+   "coasts": [],
+   "armyAdj": [
+    "naf"
+   ],
+   "fleetAdj": {
+    "": [
+     "ion",
+     "naf",
+     "tys",
+     "wes"
+    ]
+   }
+  },
+  "tus": {
+   "id": "tus",
+   "name": "Tuscany",
+   "type": "coastal",
+   "sc": false,
+   "home": null,
+   "coasts": [],
+   "armyAdj": [
+    "pie",
+    "rom",
+    "ven"
+   ],
+   "fleetAdj": {
+    "": [
+     "lyo",
+     "pie",
+     "rom",
+     "tys"
+    ]
+   }
+  },
+  "tyr": {
+   "id": "tyr",
+   "name": "Tyrolia",
+   "type": "inland",
+   "sc": false,
+   "home": null,
+   "coasts": [],
+   "armyAdj": [
+    "boh",
+    "mun",
+    "pie",
+    "tri",
+    "ven",
+    "vie"
+   ],
+   "fleetAdj": {}
+  },
+  "tys": {
+   "id": "tys",
+   "name": "Tyrrhenian Sea",
+   "type": "sea",
+   "sc": false,
+   "home": null,
+   "coasts": [],
+   "armyAdj": [],
+   "fleetAdj": {
+    "": [
+     "ion",
+     "lyo",
+     "nap",
+     "rom",
+     "tun",
+     "tus",
+     "wes"
+    ]
+   }
+  },
+  "ukr": {
+   "id": "ukr",
+   "name": "Ukraine",
+   "type": "inland",
+   "sc": false,
+   "home": null,
+   "coasts": [],
+   "armyAdj": [
+    "gal",
+    "mos",
+    "rum",
+    "sev",
+    "war"
+   ],
+   "fleetAdj": {}
+  },
+  "ven": {
+   "id": "ven",
+   "name": "Venice",
+   "type": "coastal",
+   "sc": true,
+   "home": "ITALY",
+   "coasts": [],
+   "armyAdj": [
+    "apu",
+    "pie",
+    "rom",
+    "tri",
+    "tus",
+    "tyr"
+   ],
+   "fleetAdj": {
+    "": [
+     "adr",
+     "apu",
+     "tri"
+    ]
+   }
+  },
+  "vie": {
+   "id": "vie",
+   "name": "Vienna",
+   "type": "inland",
+   "sc": true,
+   "home": "AUSTRIA",
+   "coasts": [],
+   "armyAdj": [
+    "boh",
+    "bud",
+    "gal",
+    "tri",
+    "tyr"
+   ],
+   "fleetAdj": {}
+  },
+  "wal": {
+   "id": "wal",
+   "name": "Wales",
+   "type": "coastal",
+   "sc": false,
+   "home": null,
+   "coasts": [],
+   "armyAdj": [
+    "lon",
+    "lvp",
+    "yor"
+   ],
+   "fleetAdj": {
+    "": [
+     "eng",
+     "iri",
+     "lon",
+     "lvp"
+    ]
+   }
+  },
+  "war": {
+   "id": "war",
+   "name": "Warsaw",
+   "type": "inland",
+   "sc": true,
+   "home": "RUSSIA",
+   "coasts": [],
+   "armyAdj": [
+    "gal",
+    "lvn",
+    "mos",
+    "pru",
+    "sil",
+    "ukr"
+   ],
+   "fleetAdj": {}
+  },
+  "wes": {
+   "id": "wes",
+   "name": "Western Mediterranean",
+   "type": "sea",
+   "sc": false,
+   "home": null,
+   "coasts": [],
+   "armyAdj": [],
+   "fleetAdj": {
+    "": [
+     "lyo",
+     "mao",
+     "naf",
+     "spa/sc",
+     "tun",
+     "tys"
+    ]
+   }
+  },
+  "yor": {
+   "id": "yor",
+   "name": "Yorkshire",
+   "type": "coastal",
+   "sc": false,
+   "home": null,
+   "coasts": [],
+   "armyAdj": [
+    "edi",
+    "lon",
+    "lvp",
+    "wal"
+   ],
+   "fleetAdj": {
+    "": [
+     "edi",
+     "lon",
+     "nth"
+    ]
+   }
+  }
+ },
+ "lifeAdjacency": {
+  "adr": [
+   "alb",
+   "apu",
+   "ion",
+   "tri",
+   "ven"
+  ],
+  "aeg": [
+   "bul",
+   "con",
+   "eas",
+   "gre",
+   "ion",
+   "smy"
+  ],
+  "alb": [
+   "adr",
+   "gre",
+   "ion",
+   "ser",
+   "tri"
+  ],
+  "ank": [
+   "arm",
+   "bla",
+   "con",
+   "smy"
+  ],
+  "apu": [
+   "adr",
+   "ion",
+   "nap",
+   "rom",
+   "ven"
+  ],
+  "arm": [
+   "ank",
+   "bla",
+   "sev",
+   "smy",
+   "syr"
+  ],
+  "bal": [
+   "ber",
+   "bot",
+   "den",
+   "kie",
+   "lvn",
+   "pru",
+   "swe"
+  ],
+  "bar": [
+   "nwg",
+   "nwy",
+   "stp"
+  ],
+  "bel": [
+   "bur",
+   "eng",
+   "hol",
+   "nth",
+   "pic",
+   "ruh"
+  ],
+  "ber": [
+   "bal",
+   "kie",
+   "mun",
+   "pru",
+   "sil"
+  ],
+  "bla": [
+   "ank",
+   "arm",
+   "bul",
+   "con",
+   "rum",
+   "sev"
+  ],
+  "boh": [
+   "gal",
+   "mun",
+   "sil",
+   "tyr",
+   "vie"
+  ],
+  "bot": [
+   "bal",
+   "fin",
+   "lvn",
+   "stp",
+   "swe"
+  ],
+  "bre": [
+   "eng",
+   "gas",
+   "mao",
+   "par",
+   "pic"
+  ],
+  "bud": [
+   "gal",
+   "rum",
+   "ser",
+   "tri",
+   "vie"
+  ],
+  "bul": [
+   "aeg",
+   "bla",
+   "con",
+   "gre",
+   "rum",
+   "ser"
+  ],
+  "bur": [
+   "bel",
+   "gas",
+   "mar",
+   "mun",
+   "par",
+   "pic",
+   "ruh"
+  ],
+  "cly": [
+   "edi",
+   "lvp",
+   "nao",
+   "nwg"
+  ],
+  "con": [
+   "aeg",
+   "ank",
+   "bla",
+   "bul",
+   "smy"
+  ],
+  "den": [
+   "bal",
+   "hel",
+   "kie",
+   "nth",
+   "ska",
+   "swe"
+  ],
+  "eas": [
+   "aeg",
+   "ion",
+   "smy",
+   "syr"
+  ],
+  "edi": [
+   "cly",
+   "lvp",
+   "nth",
+   "nwg",
+   "yor"
+  ],
+  "eng": [
+   "bel",
+   "bre",
+   "iri",
+   "lon",
+   "mao",
+   "nth",
+   "pic",
+   "wal"
+  ],
+  "fin": [
+   "bot",
+   "nwy",
+   "stp",
+   "swe"
+  ],
+  "gal": [
+   "boh",
+   "bud",
+   "rum",
+   "sil",
+   "ukr",
+   "vie",
+   "war"
+  ],
+  "gas": [
+   "bre",
+   "bur",
+   "mao",
+   "mar",
+   "par",
+   "spa"
+  ],
+  "gre": [
+   "aeg",
+   "alb",
+   "bul",
+   "ion",
+   "ser"
+  ],
+  "hel": [
+   "den",
+   "hol",
+   "kie",
+   "nth"
+  ],
+  "hol": [
+   "bel",
+   "hel",
+   "kie",
+   "nth",
+   "ruh"
+  ],
+  "ion": [
+   "adr",
+   "aeg",
+   "alb",
+   "apu",
+   "eas",
+   "gre",
+   "nap",
+   "tun",
+   "tys"
+  ],
+  "iri": [
+   "eng",
+   "lvp",
+   "mao",
+   "nao",
+   "wal"
+  ],
+  "kie": [
+   "bal",
+   "ber",
+   "den",
+   "hel",
+   "hol",
+   "mun",
+   "ruh"
+  ],
+  "lon": [
+   "eng",
+   "nth",
+   "wal",
+   "yor"
+  ],
+  "lvn": [
+   "bal",
+   "bot",
+   "mos",
+   "pru",
+   "stp",
+   "war"
+  ],
+  "lvp": [
+   "cly",
+   "edi",
+   "iri",
+   "nao",
+   "wal",
+   "yor"
+  ],
+  "lyo": [
+   "mar",
+   "pie",
+   "spa",
+   "tus",
+   "tys",
+   "wes"
+  ],
+  "mao": [
+   "bre",
+   "eng",
+   "gas",
+   "iri",
+   "naf",
+   "nao",
+   "por",
+   "spa",
+   "wes"
+  ],
+  "mar": [
+   "bur",
+   "gas",
+   "lyo",
+   "pie",
+   "spa"
+  ],
+  "mos": [
+   "lvn",
+   "sev",
+   "stp",
+   "ukr",
+   "war"
+  ],
+  "mun": [
+   "ber",
+   "boh",
+   "bur",
+   "kie",
+   "ruh",
+   "sil",
+   "tyr"
+  ],
+  "naf": [
+   "mao",
+   "tun",
+   "wes"
+  ],
+  "nao": [
+   "cly",
+   "iri",
+   "lvp",
+   "mao",
+   "nwg"
+  ],
+  "nap": [
+   "apu",
+   "ion",
+   "rom",
+   "tys"
+  ],
+  "nth": [
+   "bel",
+   "den",
+   "edi",
+   "eng",
+   "hel",
+   "hol",
+   "lon",
+   "nwg",
+   "nwy",
+   "ska",
+   "yor"
+  ],
+  "nwg": [
+   "bar",
+   "cly",
+   "edi",
+   "nao",
+   "nth",
+   "nwy"
+  ],
+  "nwy": [
+   "bar",
+   "fin",
+   "nth",
+   "nwg",
+   "ska",
+   "stp",
+   "swe"
+  ],
+  "par": [
+   "bre",
+   "bur",
+   "gas",
+   "pic"
+  ],
+  "pic": [
+   "bel",
+   "bre",
+   "bur",
+   "eng",
+   "par"
+  ],
+  "pie": [
+   "lyo",
+   "mar",
+   "tus",
+   "tyr",
+   "ven"
+  ],
+  "por": [
+   "mao",
+   "spa"
+  ],
+  "pru": [
+   "bal",
+   "ber",
+   "lvn",
+   "sil",
+   "war"
+  ],
+  "rom": [
+   "apu",
+   "nap",
+   "tus",
+   "tys",
+   "ven"
+  ],
+  "ruh": [
+   "bel",
+   "bur",
+   "hol",
+   "kie",
+   "mun"
+  ],
+  "rum": [
+   "bla",
+   "bud",
+   "bul",
+   "gal",
+   "ser",
+   "sev",
+   "ukr"
+  ],
+  "ser": [
+   "alb",
+   "bud",
+   "bul",
+   "gre",
+   "rum",
+   "tri"
+  ],
+  "sev": [
+   "arm",
+   "bla",
+   "mos",
+   "rum",
+   "ukr"
+  ],
+  "sil": [
+   "ber",
+   "boh",
+   "gal",
+   "mun",
+   "pru",
+   "war"
+  ],
+  "ska": [
+   "den",
+   "nth",
+   "nwy",
+   "swe"
+  ],
+  "smy": [
+   "aeg",
+   "ank",
+   "arm",
+   "con",
+   "eas",
+   "syr"
+  ],
+  "spa": [
+   "gas",
+   "lyo",
+   "mao",
+   "mar",
+   "por",
+   "wes"
+  ],
+  "stp": [
+   "bar",
+   "bot",
+   "fin",
+   "lvn",
+   "mos",
+   "nwy"
+  ],
+  "swe": [
+   "bal",
+   "bot",
+   "den",
+   "fin",
+   "nwy",
+   "ska"
+  ],
+  "syr": [
+   "arm",
+   "eas",
+   "smy"
+  ],
+  "tri": [
+   "adr",
+   "alb",
+   "bud",
+   "ser",
+   "tyr",
+   "ven",
+   "vie"
+  ],
+  "tun": [
+   "ion",
+   "naf",
+   "tys",
+   "wes"
+  ],
+  "tus": [
+   "lyo",
+   "pie",
+   "rom",
+   "tys",
+   "ven"
+  ],
+  "tyr": [
+   "boh",
+   "mun",
+   "pie",
+   "tri",
+   "ven",
+   "vie"
+  ],
+  "tys": [
+   "ion",
+   "lyo",
+   "nap",
+   "rom",
+   "tun",
+   "tus",
+   "wes"
+  ],
+  "ukr": [
+   "gal",
+   "mos",
+   "rum",
+   "sev",
+   "war"
+  ],
+  "ven": [
+   "adr",
+   "apu",
+   "pie",
+   "rom",
+   "tri",
+   "tus",
+   "tyr"
+  ],
+  "vie": [
+   "boh",
+   "bud",
+   "gal",
+   "tri",
+   "tyr"
+  ],
+  "wal": [
+   "eng",
+   "iri",
+   "lon",
+   "lvp",
+   "yor"
+  ],
+  "war": [
+   "gal",
+   "lvn",
+   "mos",
+   "pru",
+   "sil",
+   "ukr"
+  ],
+  "wes": [
+   "lyo",
+   "mao",
+   "naf",
+   "spa",
+   "tun",
+   "tys"
+  ],
+  "yor": [
+   "edi",
+   "lon",
+   "lvp",
+   "nth",
+   "wal"
+  ]
+ },
+ "startingUnits": [
+  {
+   "power": "AUSTRIA",
+   "type": "A",
+   "loc": "bud"
+  },
+  {
+   "power": "AUSTRIA",
+   "type": "A",
+   "loc": "vie"
+  },
+  {
+   "power": "AUSTRIA",
+   "type": "F",
+   "loc": "tri"
+  },
+  {
+   "power": "ENGLAND",
+   "type": "F",
+   "loc": "edi"
+  },
+  {
+   "power": "ENGLAND",
+   "type": "F",
+   "loc": "lon"
+  },
+  {
+   "power": "ENGLAND",
+   "type": "A",
+   "loc": "lvp"
+  },
+  {
+   "power": "FRANCE",
+   "type": "F",
+   "loc": "bre"
+  },
+  {
+   "power": "FRANCE",
+   "type": "A",
+   "loc": "mar"
+  },
+  {
+   "power": "FRANCE",
+   "type": "A",
+   "loc": "par"
+  },
+  {
+   "power": "GERMANY",
+   "type": "F",
+   "loc": "kie"
+  },
+  {
+   "power": "GERMANY",
+   "type": "A",
+   "loc": "ber"
+  },
+  {
+   "power": "GERMANY",
+   "type": "A",
+   "loc": "mun"
+  },
+  {
+   "power": "ITALY",
+   "type": "F",
+   "loc": "nap"
+  },
+  {
+   "power": "ITALY",
+   "type": "A",
+   "loc": "rom"
+  },
+  {
+   "power": "ITALY",
+   "type": "A",
+   "loc": "ven"
+  },
+  {
+   "power": "RUSSIA",
+   "type": "A",
+   "loc": "war"
+  },
+  {
+   "power": "RUSSIA",
+   "type": "A",
+   "loc": "mos"
+  },
+  {
+   "power": "RUSSIA",
+   "type": "F",
+   "loc": "sev"
+  },
+  {
+   "power": "RUSSIA",
+   "type": "F",
+   "loc": "stp/sc"
+  },
+  {
+   "power": "TURKEY",
+   "type": "F",
+   "loc": "ank"
+  },
+  {
+   "power": "TURKEY",
+   "type": "A",
+   "loc": "con"
+  },
+  {
+   "power": "TURKEY",
+   "type": "A",
+   "loc": "smy"
+  }
+ ],
+ "startingCenters": {
+  "AUSTRIA": [
+   "bud",
+   "tri",
+   "vie"
+  ],
+  "ENGLAND": [
+   "edi",
+   "lon",
+   "lvp"
+  ],
+  "FRANCE": [
+   "bre",
+   "mar",
+   "par"
+  ],
+  "GERMANY": [
+   "ber",
+   "kie",
+   "mun"
+  ],
+  "ITALY": [
+   "nap",
+   "rom",
+   "ven"
+  ],
+  "RUSSIA": [
+   "mos",
+   "sev",
+   "stp",
+   "war"
+  ],
+  "TURKEY": [
+   "ank",
+   "con",
+   "smy"
+  ]
+ }
+}
