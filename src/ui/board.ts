@@ -313,7 +313,9 @@ export class Board {
     clear(g);
     if (!view.life) return;
     for (const ev of view.life.events) {
-      const a = this.anchor(ev.province);
+      // A dying unit is marked where it stands (its coast, for a fleet), not at the
+      // province's generic anchor.
+      const a = this.anchor(ev.kind === 'death' && ev.unit ? ev.unit.loc : ev.province);
       if (!a) continue;
       if (ev.kind === 'death') g.append(deathMark(a));
       else g.append(birthGlyph(ev.power, a, ev.pending ? null : (ev.unit?.type ?? null)));
