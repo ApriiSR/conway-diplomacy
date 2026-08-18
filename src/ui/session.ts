@@ -1,4 +1,4 @@
-import type { PhaseRecord, Power, Variant } from '../engine/types.js';
+import type { LifeResult, PhaseRecord, Power, Variant } from '../engine/types.js';
 import { GREAT_POWERS } from '../engine/types.js';
 import { initialState, lifeStepLabel, nextPhaseLabel } from './api.js';
 import type { App } from './main.js';
@@ -76,6 +76,7 @@ export function load(app: App, game: SavedGame): void {
   app.activeTab = 'ALL';
   applyDraft(app, game.draft);
   app.viewIndex = null;
+  app.landedOnAdjudication = false;
   app.title = game.title ?? app.title;
   app.entryOpen = !app.history.length || app.orderEntryStarted;
   app.persist();
@@ -103,6 +104,7 @@ export function newGame(app: App): void {
       app.orderText = emptyText();
       app.allText = '';
       app.viewIndex = null;
+      app.landedOnAdjudication = false;
       app.lifeOpen = false;
       app.lifePreview = false;
       app.entryOpen = true;
@@ -352,16 +354,21 @@ async function withExportBoard(app: App, fn: () => Promise<void>): Promise<void>
   }
 }
 
-/** "Summer 1901 Life: 2 deaths, 1 birth" for the exported margin, or undefined when none ran. */
-export function lifeSummaryText(record: PhaseRecord | null | undefined): string | undefined {
-  const life = record?.life;
-  if (!life?.events.length) return undefined;
+/** "2 deaths, 1 birth" — what a Life step did, for a caption or a toast. */
+export function lifeCountsText(life: LifeResult): string {
   const deaths = life.events.filter((e) => e.kind === 'death').length;
   const births = life.events.length - deaths;
   const bits: string[] = [];
   if (deaths) bits.push(`${deaths} death${deaths === 1 ? '' : 's'}`);
   if (births) bits.push(`${births} birth${births === 1 ? '' : 's'}`);
-  return `${lifeStepLabel(record!.before)}: ${bits.join(', ')}`;
+  return bits.join(', ');
+}
+
+/** "Summer 1901 Life: 2 deaths, 1 birth" for the exported margin, or undefined when none ran. */
+export function lifeSummaryText(record: PhaseRecord | null | undefined): string | undefined {
+  const life = record?.life;
+  if (!life?.events.length) return undefined;
+  return `${lifeStepLabel(record!.before)}: ${lifeCountsText(life)}`;
 }
 
 /** "3 min ago" / "yesterday" for the games list — an exact timestamp helps nobody here. */

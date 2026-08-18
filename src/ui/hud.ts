@@ -143,6 +143,8 @@ function scrubber(app: App): HTMLElement[] {
   select.addEventListener('change', () => {
     const v = Number(select.value);
     app.viewIndex = v >= max ? null : v;
+    // Chosen deliberately now, so nothing else may move it back.
+    app.landedOnAdjudication = false;
     app.render();
   });
   // Always present, never conditional: a label that appears only on past phases would

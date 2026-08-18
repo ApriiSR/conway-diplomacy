@@ -48,6 +48,8 @@ export function renderPanel(app: App): void {
   const view = app.viewedView();
   if (view) {
     app.panel.append(historyEntryPanel(app, view));
+    // The order box stays open under the result the GM was parked on: typing in it (or
+    // picking a power tab) is them starting the next phase, which hands the board back.
     app.panel.append(...entrySection(app));
     restore();
     return;
@@ -78,15 +80,7 @@ export function renderPanel(app: App): void {
   if (showIntro(app)) app.panel.append(introCard(app));
 
   if (fresh && !app.entryOpen) {
-    const open = el('button', { class: 'expand-entry' }, [
-      `Enter ${nextPhaseLabel(app.state)} orders`,
-    ]);
-    open.addEventListener('click', () => {
-      app.entryOpen = true;
-      app.render();
-      app.ta?.focus();
-    });
-    app.panel.append(open);
+    app.panel.append(openEntryButton(app));
   } else {
     app.panel.append(...entrySection(app));
     if (!fresh) {
@@ -97,6 +91,18 @@ export function renderPanel(app: App): void {
     }
   }
   restore();
+}
+
+/** The collapsed order box: one button naming the phase whose orders it will take. */
+function openEntryButton(app: App): HTMLElement {
+  const open = el('button', { class: 'expand-entry' }, [`Enter ${nextPhaseLabel(app.state)} orders`]);
+  open.addEventListener('click', () => {
+    app.returnToLive();
+    app.entryOpen = true;
+    app.render();
+    app.ta?.focus();
+  });
+  return open;
 }
 
 function showIntro(app: App): boolean {

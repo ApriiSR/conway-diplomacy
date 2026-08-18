@@ -41,7 +41,7 @@ import {
 } from './order-entry.js';
 import { renderPanel } from './panel.js';
 import { upsertOrderLine } from './orders-text.js';
-import { applyDraft, lifeSummaryText, persist } from './session.js';
+import { applyDraft, lifeCountsText, lifeSummaryText, persist } from './session.js';
 import { currentGameId, listGames, loadGame, migrateLegacySave, readShareHash } from './persist.js';
 import { el } from './svg.js';
 
@@ -71,6 +71,13 @@ export class App {
   allText = '';
   /** Index into `views()` — null = the live board ("Current"). */
   viewIndex: number | null = null;
+  /**
+   * Set when *adjudicating* parked the view on the phase it just resolved, rather than
+   * the GM choosing it. That view is a result to read and share, so the first move
+   * toward the next phase — a keystroke, a unit click, a tab — hands the board back.
+   * A view the GM picked themselves is never taken away from them like that.
+   */
+  landedOnAdjudication = false;
   lifeOpen = false;
   /** "Life preview": mark what the Life step would do to the board as it stands. */
   lifePreview = false;
@@ -211,6 +218,25 @@ export class App {
     return this.viewedView()?.label ?? nextPhaseLabel(this.state);
   }
 
+  /** Park on the phase view of the record just adjudicated: its arrows, its results. */
+  private landOnLastPhase(): void {
+    const last = this.history.length - 1;
+    const at = this.views().findIndex((v) => v.index === last && v.kind === 'phase');
+    this.viewIndex = at < 0 ? null : at;
+    this.landedOnAdjudication = at >= 0;
+  }
+
+  /**
+   * Hand the board back after an adjudication parked it on a result. Returns whether it
+   * did anything, so callers can skip a render they don't otherwise need.
+   */
+  returnToLive(): boolean {
+    if (!this.landedOnAdjudication) return false;
+    this.landedOnAdjudication = false;
+    this.viewIndex = null;
+    return true;
+  }
+
   parsedFor(power: Power): { orders: Order[]; errors: ParseError[]; duplicates: DuplicateOrder[] } {
     return parseOrders(this.orderText[power] ?? '', this.state, this.map, power);
   }
@@ -294,6 +320,9 @@ export class App {
 
   adjudicate(): void {
     this.flushText();
+    // Adjudicating from the result we parked them on is the ordinary next step, not an
+    // attempt to edit history: take the board back first rather than scolding them.
+    this.returnToLive();
     if (!this.live) {
       this.say('Viewing history — jump to the current phase first.');
       return;
@@ -327,8 +356,23 @@ export class App {
     this.entryOpen = false;
     this.expandedPower = null;
     this.lifeOpen = this.variant === 'conway' && !!record.life && record.life.events.length > 0;
+    this.landOnLastPhase();
     this.persist();
     this.render();
+    this.announceLifeStep();
+  }
+
+  /**
+   * The Life step is a second board, one entry further along, and landing on the phase
+   * view is the only place it isn't in front of the GM — so the toast says it happened
+   * and names the entry that shows it.
+   */
+  private announceLifeStep(): void {
+    const last = this.history.length - 1;
+    const lifeView = this.views().find((v) => v.index === last && v.kind === 'life');
+    const life = lifeView?.record.life;
+    if (!lifeView || !life) return;
+    this.say(`Adjudicated — Life step: ${lifeCountsText(life)} (see ${lifeView.label})`);
   }
 
   /**
@@ -374,6 +418,7 @@ export class App {
     this.entryOpen = false;
     this.expandedPower = null;
     this.lifeOpen = false;
+    this.landOnLastPhase();
     this.persist();
     this.render();
   }
@@ -384,6 +429,7 @@ export class App {
     this.future.push(record);
     this.state = record.before;
     this.viewIndex = null;
+    this.landedOnAdjudication = false;
     this.orderText = emptyText();
     this.allText = '';
     this.clicks.reset();
@@ -398,6 +444,7 @@ export class App {
     this.history.push(record);
     this.state = record.after;
     this.viewIndex = null;
+    this.landedOnAdjudication = false;
     this.clicks.reset();
     this.entryOpen = false;
     this.persist();
@@ -407,6 +454,9 @@ export class App {
   // ---------- board clicks and keys ----------
 
   private onBoardClick(id: ProvinceId): void {
+    // Clicking a unit is the GM starting the next phase, so it takes the board back
+    // from the result they were parked on — and then counts as the first click.
+    const returned = this.returnToLive();
     if (!this.live) {
       this.say('Viewing history — orders are read-only here.');
       return;
@@ -415,7 +465,7 @@ export class App {
     switch (out.kind) {
       case 'order':
         this.addOrder(out.order);
-        break;
+        return;
       case 'need-coast':
         askCoast(this, out.province, out.coasts, (coast) =>
           this.addOrder(this.clicks.resolveCoast(this.state, out.unit, out.province, coast)),
@@ -429,10 +479,13 @@ export class App {
         break;
       case 'redraw':
         this.render();
-        break;
+        return;
       default:
         break;
     }
+    // A click that changes no order still moved the board back to live, and that has to
+    // be drawn — otherwise the flag is cleared while the map still shows the old view.
+    if (returned) this.render();
   }
 
   private onKey(e: KeyboardEvent): void {

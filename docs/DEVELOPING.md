@@ -136,6 +136,12 @@ piece of the interface means opening the file named after it.
   records, and both return to the live board. "Current" is the live board and carries no
   result or Life marks at all — only what the GM is entering now, and the Life *preview* if
   that toggle is on.
+- **Adjudicating lands on the phase view it just produced** (`landOnLastPhase`), so the
+  results are on the board and in the panel, ready to copy — and sets `landedOnAdjudication`.
+  The first move toward the next phase — a keystroke in the box, a unit click, a power tab,
+  the collapsed entry button, Adjudicate itself — calls `returnToLive()` and hands the board
+  back. A view the GM picked from the dropdown never carries that flag, so nothing takes it
+  away from them. When a Life step ran, the toast names the entry that shows it.
 - The Life view's board is `record.preLifeUnits`, recorded by `flow.ts` because `after` no
   longer has the units that died. Exports predating the field are reconstructed from
   `after` + `life` by `preLifeUnits()`.

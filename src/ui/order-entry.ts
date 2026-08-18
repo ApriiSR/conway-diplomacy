@@ -106,6 +106,9 @@ function orderTextarea(app: App): HTMLTextAreaElement {
   });
   ta.addEventListener('input', () => {
     if (app.composing) return; // never re-render mid-IME-composition
+    // Typing is the next phase starting: take the board back from the result the last
+    // adjudication parked it on, before the debounce even lands.
+    if (app.returnToLive()) app.render();
     scheduleApply(app);
   });
   ta.addEventListener('blur', () => app.flushText());
@@ -287,6 +290,7 @@ function tabBar(app: App): HTMLElement {
     if (color) b.style.setProperty('--chip', color);
     b.addEventListener('click', () => {
       app.flushText();
+      app.returnToLive();
       app.activeTab = id;
       if (id === 'ALL') app.allText = combinedText(app);
       app.render();
