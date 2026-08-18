@@ -104,6 +104,32 @@ describe('advance()', () => {
     expect(record.after.units.map((u) => u.loc).sort()).toEqual(['a', 'b', 'c']);
   });
 
+  // The history draws a Life step on the board it acted on, so the record has to keep
+  // that board: `after` no longer has the units that died on it.
+  it('records the pre-Life board alongside the Life result', () => {
+    const map = mkMap();
+    const lonely: GameState = { ...initialState(map), units: [{ power: 'FRANCE', type: 'A', loc: 'a' }] };
+    resolveMovement.mockReturnValue(passThrough(lonely));
+
+    const record = advance(lonely, [] as Order[], map);
+    expect(record.preLifeUnits?.map((u) => u.loc)).toEqual(['a']);
+    expect(record.after.units).toEqual([]);
+  });
+
+  it('records the pre-Life board for the Winter step too', () => {
+    const map = mkMap();
+    const state: GameState = {
+      ...initialState(map),
+      season: 'WINTER',
+      phase: 'ADJUSTMENT',
+      units: [{ power: 'FRANCE', type: 'A', loc: 'a' }],
+    };
+    resolveAdjustments.mockReturnValue({ results: [], next: { ...state } });
+
+    const record = advance(state, [] as Order[], map);
+    expect(record.preLifeUnits?.map((u) => u.loc)).toEqual(['a']);
+  });
+
   it('skips RETREAT and does not run Life after Fall movement with nothing dislodged', () => {
     const map = mkMap();
     const state: GameState = { ...initialState(map), season: 'FALL' };

@@ -19,6 +19,13 @@ import type { DuplicateOrder, ParseError, SpawnChoice } from './api.js';
 import { Board } from './board.js';
 import { powerTitle } from './colors.js';
 import { installGestures, isMobile, MOBILE_EXIT, MOBILE_MAX, syncLayoutClass } from './gestures.js';
+import {
+  historyViews,
+  viewLife,
+  viewResults,
+  viewState,
+  type HistoryView,
+} from './history-views.js';
 import { renderHud, renderToast } from './hud.js';
 import { ClickController, type ClickMode } from './interaction.js';
 import { provinceOf } from '../engine/map-utils.js';
@@ -62,10 +69,13 @@ export class App {
   activeTab: Power | 'ALL' = 'ALL';
   /** Raw buffer behind the All tab, so typing there isn't reflowed under the caret. */
   allText = '';
-  viewIndex: number | null = null; // null = live board
+  /** Index into `views()` — null = the live board ("Current"). */
+  viewIndex: number | null = null;
   lifeOpen = false;
   /** "Life preview": mark what the Life step would do to the board as it stands. */
   lifePreview = false;
+  /** Do exported images carry the order arrows and Life marks, or just the board? */
+  exportMarks = true;
   toast: string | null = null;
   private toastTimer = 0;
   /** After adjudication the results take the panel and entry collapses beneath them. */
@@ -172,14 +182,33 @@ export class App {
     return this.state.variant ?? 'conway';
   }
 
+  /**
+   * The history dropdown's entries. A phase and its Life step are two entries over one
+   * record, so this is what `viewIndex` indexes — not `history` itself. Undo and redo
+   * still work on records: viewing is read-only, and both of them return to the live board.
+   */
+  views(): HistoryView[] {
+    return historyViews(this.history);
+  }
+
+  /** The history entry being looked at, or null on the live board. */
+  viewedView(): HistoryView | null {
+    if (this.viewIndex === null) return null;
+    return this.views()[this.viewIndex] ?? null;
+  }
+
   viewedRecord(): PhaseRecord | null {
-    if (this.viewIndex === null) return this.history[this.history.length - 1] ?? null;
-    return this.history[this.viewIndex] ?? null;
+    return this.viewedView()?.record ?? this.history[this.history.length - 1] ?? null;
   }
 
   viewedState(): GameState {
-    if (this.viewIndex === null) return this.state;
-    return this.history[this.viewIndex]?.before ?? this.state;
+    const view = this.viewedView();
+    return view ? viewState(view) : this.state;
+  }
+
+  /** What the board on screen is: the entry's own name, or the phase awaiting orders. */
+  viewLabel(): string {
+    return this.viewedView()?.label ?? nextPhaseLabel(this.state);
   }
 
   parsedFor(power: Power): { orders: Order[]; errors: ParseError[]; duplicates: DuplicateOrder[] } {
@@ -448,38 +477,50 @@ export class App {
   // ---------- render ----------
 
   /**
-   * What the board's Life layer shows: the preview of the *current* board if the
-   * toggle is on, otherwise whatever the last adjudication's Life step did.
+   * What the board's Life layer shows: on a Life history entry, that step's marks; on the
+   * live board, only the preview of what the step *would* do, if that toggle is on. A
+   * finished step's ✕s and birth rings belong to the board it ran on, which is its own
+   * history entry — leaving them on the live board rings units that are simply there now.
    */
-  private lifeOverlay(record: PhaseRecord | null | undefined, showResults: boolean): LifeResult | undefined {
-    if (this.variant !== 'conway') return undefined;
+  private lifeOverlay(view: HistoryView | null, marks: boolean): LifeResult | undefined {
+    if (this.variant !== 'conway' || !marks) return undefined;
     if (this.lifePreview) return lifeStep(this.viewedState().units, this.map);
-    return this.lifeOpen && showResults ? record?.life : undefined;
+    return view ? viewLife(view) : undefined;
   }
 
-  render(opts: { caption?: boolean } = {}): void {
+  /** The exported margin's Life line, on the one view whose board the step acted on. */
+  private captionLifeSummary(view: HistoryView | null, marks: boolean): string | undefined {
+    return marks && view?.kind === 'life' ? lifeSummaryText(view.record) : undefined;
+  }
+
+  /**
+   * `marks: false` exports the bare board — the same view, without the arrows and Life
+   * marks (and so without their legend rows, which are derived from what is drawn).
+   */
+  render(opts: { caption?: boolean; marks?: boolean } = {}): void {
+    const marks = opts.marks !== false;
+    const view = this.viewedView();
     const viewState = this.viewedState();
-    const record = this.live ? this.history[this.history.length - 1] : this.viewedRecord();
-    // On the live board the last phase's arrows stay up until the GM starts entering
-    // the next phase's orders; past phases keep theirs in the scrubber's read-only view.
-    const showResults = this.live ? this.isCurrentRecord(record) && !this.orderEntryStarted : true;
 
     this.board.render({
       state: viewState,
-      results: showResults ? record?.results : undefined,
+      // Result arrows belong to the phase they were given in, so they are drawn on that
+      // phase's own history entry and never on the live board, whose units have already
+      // moved. `Current` is the board as it stands, plus whatever is being entered onto it.
+      results: view && marks ? viewResults(view) : undefined,
       // What the GM has entered so far, drawn provisionally. Only on the live board and
       // never in an export: a shared image should show what happened, not a draft.
       pendingOrders: this.live && !opts.caption ? this.allOrders() : undefined,
       dislodged: viewState.dislodged,
-      life: this.lifeOverlay(record, showResults),
+      life: this.lifeOverlay(view, marks),
       selected: this.live ? this.clicks.selected : null,
       secondary: this.live ? this.clicks.secondary : null,
       targets: this.live ? this.clicks.targets : [],
       convoyTargets: this.live ? this.clicks.convoyTargets : [],
       title: this.title,
-      phaseLabel: nextPhaseLabel(viewState),
+      phaseLabel: this.viewLabel(),
       showCaption: !!opts.caption,
-      lifeSummary: opts.caption ? lifeSummaryText(record) : undefined,
+      lifeSummary: opts.caption ? this.captionLifeSummary(view, marks) : undefined,
     });
 
     // Layout mode (is-mobile / the 940px→720px stacked breakpoint) is decided solely by

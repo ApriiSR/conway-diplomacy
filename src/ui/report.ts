@@ -58,8 +58,20 @@ export function lifeLineText(ev: LifeEvent): string {
   return `${name}: ${what} (parents ${parents})`;
 }
 
-/** Plain text for the clipboard: phase label, results by power, then the Life step. */
-export function reportText(label: string, record: PhaseRecord, life?: LifeResult): string {
+/** Just the Life step, for the history entry that is only the Life step. */
+export function lifeReportText(label: string, life: LifeResult): string {
+  const lines: string[] = [label, ''];
+  if (!life.events.length) lines.push('No births or deaths.');
+  for (const ev of life.events) lines.push(lifeLineText(ev));
+  return lines.join('\n') + '\n';
+}
+
+/**
+ * Plain text for the clipboard: phase label, results by power, then the Life step —
+ * unless `life` is `null`, which drops the Life section: the history lists a phase and
+ * its Life step as two entries, and each entry copies only its own half.
+ */
+export function reportText(label: string, record: PhaseRecord, life?: LifeResult | null): string {
   const lines: string[] = [label, ''];
   const groups = resultGroups(record);
   if (!groups.length) lines.push('(no orders)');
@@ -71,7 +83,7 @@ export function reportText(label: string, record: PhaseRecord, life?: LifeResult
     }
     lines.push('');
   }
-  const l = life ?? record.life;
+  const l = life === null ? undefined : (life ?? record.life);
   if (l) {
     lines.push(`${lifeStepLabel(record.before)}:`);
     if (!l.events.length) lines.push('  No births or deaths.');

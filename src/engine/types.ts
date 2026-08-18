@@ -136,5 +136,12 @@ export interface PhaseRecord {
   orders: Order[];
   results: ResultEntry[];
   life?: LifeResult;
+  /**
+   * The units the Life step ran on: the board after the orders resolved but before
+   * anything died or was born. Present whenever `life` is, and only there so the
+   * history can draw the Life step on the board it actually acted on. Older exports
+   * predate it, so readers reconstruct it from `after` + `life` when it is missing.
+   */
+  preLifeUnits?: Unit[];
   after: GameState;
 }

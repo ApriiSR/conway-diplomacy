@@ -1,8 +1,9 @@
-import type { LifeResult, UnitType } from '../engine/types.js';
+import type { LifeResult, PhaseRecord, UnitType } from '../engine/types.js';
 import { lifeStep } from '../game/life.js';
 import { lifeStepLabel, nextPhaseLabel } from './api.js';
 import { POWER_COLORS } from './colors.js';
 import { sheetHandle } from './gestures.js';
+import type { HistoryView } from './history-views.js';
 import type { App } from './main.js';
 import { introCard } from './modals.js';
 import { entrySection } from './order-entry.js';
@@ -41,6 +42,17 @@ export function renderPanel(app: App): void {
   if (app.mobile) app.panel.append(sheetHandle(app));
   if (app.sandbox && !app.bannerDismissed) app.panel.append(sandboxBanner(app));
 
+  // A history entry reports itself and nothing else: a phase entry its orders and their
+  // results, a Life entry its births and deaths. The order box stays below it, so
+  // stepping back through the history never hides the draft being typed.
+  const view = app.viewedView();
+  if (view) {
+    app.panel.append(historyEntryPanel(app, view));
+    app.panel.append(...entrySection(app));
+    restore();
+    return;
+  }
+
   if (app.state.phase === 'SPAWN_CHOICE') {
     app.panel.append(spawnChoiceRows(app));
     app.panel.append(...entrySection(app));
@@ -52,8 +64,8 @@ export function renderPanel(app: App): void {
     return;
   }
 
-  const record = app.live ? app.history[app.history.length - 1] : app.viewedRecord();
-  const fresh = app.live && app.isCurrentRecord(record) && !app.orderEntryStarted;
+  const record = app.history[app.history.length - 1];
+  const fresh = app.isCurrentRecord(record) && !app.orderEntryStarted;
 
   if (fresh) {
     // Results are the product: they go on top, with the two share actions together.
@@ -117,26 +129,67 @@ function sandboxBanner(app: App): HTMLElement {
   return banner;
 }
 
-/** Text cross-check of the phase just adjudicated, with the share actions attached. */
-function resultsPanel(app: App): HTMLElement | null {
-  const record = app.live ? app.history[app.history.length - 1] : app.viewedRecord();
-  if (!record) return null;
-  if (app.live && !app.isCurrentRecord(record)) return null;
-  const groups = resultGroups(record);
-  if (!groups.length && !record.life) return null;
-
-  const label = nextPhaseLabel(record.before);
-  const box = el('div', { class: 'results-panel' });
-  box.append(el('div', { class: 'life-head' }, [el('strong', {}, [`${label} — results`])]));
-
+/**
+ * The share row under a report: the two outputs that reach the players, plus what the
+ * image carries. "board only" exports the same view without its arrows and Life marks —
+ * the position on its own, for a player who wants to plan on it.
+ */
+function shareGroup(app: App, view: HistoryView | null): HTMLElement {
   const post = el('div', { class: 'post-group' });
   post.append(el('span', { class: 'group-label' }, ['Share results']));
   const copy = el('button', { class: 'post-action' }, ['Copy results']);
-  copy.addEventListener('click', () => copyResults(app, record));
+  copy.addEventListener('click', () => copyResults(app, view));
   const png = el('button', { class: 'post-action' }, [canCopyImage() ? 'Copy PNG' : 'Save PNG']);
   png.addEventListener('click', () => void (canCopyImage() ? copyBoardPng(app) : exportPng(app)));
-  post.append(copy, png);
-  box.append(post);
+  const marks = el('button', {
+    class: 'ghost small',
+    title: 'What the exported image carries: the order arrows and Life marks, or the bare board',
+  }, [app.exportMarks ? 'with orders' : 'board only']);
+  marks.addEventListener('click', () => {
+    app.exportMarks = !app.exportMarks;
+    app.render();
+  });
+  post.append(copy, png, marks);
+  return post;
+}
+
+/** The report for one history entry: its own orders and results, or its own Life list. */
+function historyEntryPanel(app: App, view: HistoryView): HTMLElement {
+  if (view.kind === 'life') {
+    const life = view.record.life ?? { units: [], events: [], pending: [] };
+    const box = el('div', { class: 'life-panel' });
+    box.append(el('div', { class: 'life-head' }, [el('strong', {}, [view.label])]));
+    box.append(shareGroup(app, view));
+    const list = el('ul', { class: 'life-list' });
+    for (const ev of life.events) list.append(el('li', {}, [lifeLineText(ev)]));
+    if (!life.events.length) list.append(el('li', {}, ['No births or deaths.']));
+    box.append(list);
+    return box;
+  }
+  return resultsBox(app, view.record, view.label, view, false);
+}
+
+/** Text cross-check of the phase just adjudicated, with the share actions attached. */
+function resultsPanel(app: App): HTMLElement | null {
+  const record = app.history[app.history.length - 1];
+  if (!record || !app.isCurrentRecord(record)) return null;
+  const groups = resultGroups(record);
+  if (!groups.length && !record.life) return null;
+  return resultsBox(app, record, nextPhaseLabel(record.before), null, true);
+}
+
+function resultsBox(
+  app: App,
+  record: PhaseRecord,
+  label: string,
+  view: HistoryView | null,
+  withLife: boolean,
+): HTMLElement {
+  const groups = resultGroups(record);
+  const box = el('div', { class: 'results-panel' });
+  box.append(el('div', { class: 'life-head' }, [el('strong', {}, [`${label} — results`])]));
+  box.append(shareGroup(app, view));
+  if (!groups.length) box.append(el('p', { class: 'hint' }, ['No orders were given.']));
 
   for (const g of groups) {
     const grp = el('div', { class: 'result-group' });
@@ -155,7 +208,7 @@ function resultsPanel(app: App): HTMLElement | null {
     box.append(grp);
   }
   // The Life list is only repeated here when the dedicated Life panel is hidden.
-  if (record.life?.events.length && !app.lifeOpen) {
+  if (withLife && record.life?.events.length && !app.lifeOpen) {
     const grp = el('div', { class: 'result-group' });
     grp.append(el('div', { class: 'result-power' }, [lifeStepLabel(record.before)]));
     for (const ev of record.life.events) {
@@ -208,8 +261,7 @@ function spawnChoiceRows(app: App): HTMLElement {
   box.append(el('h3', {}, ['Choose spawn types']));
   box.append(
     el('p', { class: 'hint' }, [
-      'Each coastal birth is an army or a fleet, chosen by whoever owns it. Anything left undecided ' +
-        'becomes an army, so a quiet player never holds the game up. This board is shareable as-is.',
+      'Each coastal birth is an army or a fleet, chosen by its owner. Undecided births become armies.',
     ]),
   );
   const picks = app.spawnPicks();

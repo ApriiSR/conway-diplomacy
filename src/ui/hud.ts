@@ -1,5 +1,4 @@
 import type { GameState } from '../engine/types.js';
-import { nextPhaseLabel } from './api.js';
 import { powerTitle } from './colors.js';
 import type { App } from './main.js';
 import { helpModal, rulesModal } from './modals.js';
@@ -36,7 +35,7 @@ export function renderHud(app: App): void {
   // phase changes. Winter's builds-due summary is in the panel's counts table for that
   // reason; here the phase title carries it only as a tooltip.
   const header = el('div', { class: 'phase-header' }, [
-    el('div', { class: 'phase-label' }, [nextPhaseLabel(viewState)]),
+    el('div', { class: 'phase-label' }, [app.viewLabel()]),
     titleInput,
   ]);
   if (viewState.phase === 'ADJUSTMENT') {
@@ -58,9 +57,25 @@ export function renderHud(app: App): void {
   } else {
     tools.append(btn('Save PNG', () => void exportPng(app), 'primary', 'Download a 2× board image'));
   }
+  // Both PNG actions export whatever board is on screen; this says whether the arrows and
+  // Life marks go with it, so the same view can be shared annotated or bare.
+  tools.append(
+    btn(
+      app.exportMarks ? 'Orders: on' : 'Orders: off',
+      () => {
+        app.exportMarks = !app.exportMarks;
+        app.render();
+      },
+      app.exportMarks ? 'on' : '',
+      'Include the order arrows and Life marks in exported images',
+    ),
+  );
+  const view = app.viewedView();
   const record = app.history[app.history.length - 1];
-  if (app.isCurrentRecord(record)) {
-    tools.append(btn('Copy results', () => copyResults(app, record!), 'primary', 'Copy the phase report'));
+  if (view) {
+    tools.append(btn('Copy results', () => copyResults(app, view), 'primary', `Copy the ${view.label} report`));
+  } else if (app.isCurrentRecord(record)) {
+    tools.append(btn('Copy results', () => copyResults(app, null), 'primary', 'Copy the phase report'));
   }
   tools.append(btn('Link', () => void copyShareLink(app), '', 'Copy a sandbox link to this board'));
   if (app.variant === 'conway') {
@@ -105,23 +120,23 @@ function historyBar(app: App): HTMLElement {
 }
 
 /**
- * Phase picker: a `<select>`, which names each phase outright and is the same width
- * whichever one is chosen, so choosing a phase doesn't resize the bar around it.
+ * Phase picker: a `<select>`, which names each entry outright and is the same width
+ * whichever one is chosen, so choosing one doesn't resize the bar around it. It lists
+ * *views*, not records — a phase and the Life step that followed it are two boards to
+ * look at, so they are two entries.
  */
 function scrubber(app: App): HTMLElement[] {
-  const max = app.history.length;
+  const views = app.views();
+  const max = views.length;
   const value = app.viewIndex === null ? max : app.viewIndex;
   const select = el('select', {
     class: 'scrub',
     'aria-label': 'Phase history',
     title: 'Jump to an adjudicated phase, or back to the current one',
   }) as HTMLSelectElement;
-  for (let i = 0; i < max; i++) {
-    const rec = app.history[i]!;
-    select.append(
-      el('option', { value: String(i) }, [`${i + 1}. ${nextPhaseLabel(rec.before)}`]),
-    );
-  }
+  views.forEach((v, i) => {
+    select.append(el('option', { value: String(i) }, [`${i + 1}. ${v.label}`]));
+  });
   select.append(el('option', { value: String(max) }, ['Current']));
   select.value = String(value);
   // `change`, not `input`: re-rendering the bar mid-interaction is what broke dragging.

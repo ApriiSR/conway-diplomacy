@@ -239,6 +239,11 @@ function validateHistory(history: unknown, map: MapData): PhaseRecord[] {
     const r = record as Partial<PhaseRecord>;
     if (!Array.isArray(r.orders)) throw new Error(`invalid game file: ${where} has no orders list`);
     if (!Array.isArray(r.results)) throw new Error(`invalid game file: ${where} has no results list`);
+    // Optional: exports written before the Life step got its own history view have no
+    // `preLifeUnits`, and the reader reconstructs it — but a present one must be a list.
+    if (r.preLifeUnits !== undefined && !Array.isArray(r.preLifeUnits)) {
+      throw new Error(`invalid game file: ${where} has an invalid pre-Life unit list`);
+    }
     for (const [which, board] of [['before', r.before], ['after', r.after]] as const) {
       if (!board || typeof board !== 'object') {
         throw new Error(`invalid game file: ${where} has no '${which}' board`);

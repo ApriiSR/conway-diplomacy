@@ -182,6 +182,31 @@ describe('exportGame / importGame', () => {
     expect(() => importGame(json)).toThrow(/history phase 1 has no orders list/);
   });
 
+  it('round-trips the pre-Life board, and accepts a history written without one', () => {
+    const state = sampleState();
+    const preLifeUnits = [...state.units, { power: 'FRANCE' as const, type: 'A' as const, loc: 'bur' }];
+    const record: PhaseRecord = { before: state, orders: [], results: [], preLifeUnits, after: state };
+    expect(importGame(exportGame({ state, history: [record] })).history[0]!.preLifeUnits).toEqual(
+      preLifeUnits,
+    );
+    const old = JSON.stringify({
+      version: 1,
+      state,
+      history: [{ before: state, orders: [], results: [], after: state }],
+    });
+    expect(importGame(old).history[0]!.preLifeUnits).toBeUndefined();
+  });
+
+  it('rejects a history record whose pre-Life board is not a list', () => {
+    const state = sampleState();
+    const json = JSON.stringify({
+      version: 1,
+      state,
+      history: [{ before: state, orders: [], results: [], preLifeUnits: 'nope', after: state }],
+    });
+    expect(() => importGame(json)).toThrow(/invalid pre-Life unit list/);
+  });
+
   it('rejects a history that is not a list', () => {
     const json = JSON.stringify({ version: 1, state: sampleState(), history: { nope: true } });
     expect(() => importGame(json)).toThrow(/history is not a list/);

@@ -76,6 +76,10 @@ exactly like any other phase.
 
 `advance` throws if called in `SPAWN_CHOICE`.
 
+A record whose phase ran a Life step also carries `preLifeUnits`: the board the step acted
+on, which `after` no longer is — the history draws the ✕s and birth rings on it. It is
+optional on `PhaseRecord` because games exported before it existed don't have it.
+
 ## Codec (`src/game/codec.ts`)
 
 `encodeState(state) → Promise<string>` (deflate + base64url, for `#s=` links) and
@@ -99,11 +103,12 @@ piece of the interface means opening the file named after it.
 
 | File | What it owns | Lines |
 | --- | --- | --- |
-| `main.ts` | the `App` shell: session state, boot, adjudicate/undo/redo, board clicks and keys, `render()` | ~495 |
-| `session.ts` | saved games (autosave, load, switch, rename), JSON import/export, share links, the board-image and results sharing, the Games and Game-file dialogs | ~360 |
+| `main.ts` | the `App` shell: session state, boot, adjudicate/undo/redo, board clicks and keys, `render()` | ~536 |
+| `session.ts` | saved games (autosave, load, switch, rename), JSON import/export, share links, the board-image and results sharing, the Games and Game-file dialogs | ~379 |
 | `order-entry.ts` | the order text model and its UI: the long-lived textarea, tabs, mode bar, inline errors and warnings, readiness strip, the adjudicate button and its problems-first confirm dialog | ~565 |
-| `panel.ts` | the panel column's layout: results, the Life list, spawn-choice rows, sandbox banner, where the intro card and entry section go | ~238 |
-| `hud.ts` | the bar over the map: phase header, tool buttons, history (undo/redo/phase picker), toasts | ~151 |
+| `panel.ts` | the panel column's layout: results, the Life list, spawn-choice rows, sandbox banner, where the intro card and entry section go | ~290 |
+| `history-views.ts` | what the history lists and what each entry puts on the board — pure, no DOM | ~73 |
+| `hud.ts` | the bar over the map: phase header, tool buttons, history (undo/redo/phase picker), toasts | ~166 |
 | `modals.ts` | the modal stack and its dialogs: coast picker, build picker, clipboard fallback, Help, Rules, the first-run card | ~170 |
 | `gestures.ts` | phone layout: the mobile/desktop decision and its hysteresis, touch pan/pinch/double-tap, the bottom sheet's handle | ~149 |
 | `board.ts` | the `Board` class: the layer stack and the overlays that move — units, order arrows, Life marks, selection | ~357 |
@@ -122,8 +127,22 @@ piece of the interface means opening the file named after it.
 - Two order-entry modes write the same order list: a per-power text box (tolerant parsing,
   errors shown inline) and click-on-board. During `SPAWN_CHOICE` the A/F buttons and a typed
   `Build F Edi` are the same act — the buttons write that line.
-- Adjudicating draws results as arrows, then the Life panel: deaths marked ✕, births as
-  hollow circles.
+- **History is a list of *views*, not of records** (`history-views.ts`, `HistoryView`). Every
+  mark is drawn on the board it acted on, never on the board it produced, so one record can
+  be two things to look at: a **phase** view — `record.before` with that record's own arrows
+  and result marks (a bounce ✕ sits where the move was stopped) — and, when the record has a
+  Life step that did something, a **Life** view — the board the orders produced, with that
+  step's ✕s and birth rings on it. `app.viewIndex` indexes this list; undo/redo still work on
+  records, and both return to the live board. "Current" is the live board and carries no
+  result or Life marks at all — only what the GM is entering now, and the Life *preview* if
+  that toggle is on.
+- The Life view's board is `record.preLifeUnits`, recorded by `flow.ts` because `after` no
+  longer has the units that died. Exports predating the field are reconstructed from
+  `after` + `life` by `preLifeUnits()`.
+- Copy results, Copy PNG and Save PNG all act on the view on screen — a phase view copies its
+  orders and results, a Life view its births and deaths, and the caption is the view's own
+  label. The HUD's `Orders: on/off` toggle (`app.exportMarks`) exports the same view without
+  the arrows and marks; the legend rows follow, since they are derived from what is drawn.
 - Undo/redo over the history stack, export/import JSON, share links, PNG export.
 - `src/ui/rules-text.ts` is the single source of the variant's rules. The Rules panel renders
   it, and the README's rules section is generated from it — `npm run rules:sync` rewrites
@@ -158,6 +177,7 @@ Run them only to change the map or to re-port the DATC suite, and commit what th
 | --- | --- |
 | Add or change a variant rule | `src/game/life.ts` (the Life step itself) and/or `src/game/flow.ts` (when it runs); the rule text in `src/ui/rules-text.ts` + `npm run rules:sync`; tests in `test/game/life.test.ts` / `flow.test.ts` |
 | Change how a phase is reported | `src/ui/report.ts`, `src/ui/phase-info.ts`; tests in `test/ui/report.test.ts` |
+| Change what the history lists or shows | `src/ui/history-views.ts` (the views themselves), `hud.ts` (the picker), `panel.ts` (the entry's report); tests in `test/ui/history-views.test.ts` |
 | Add a map | `src/data/` (a new `MapData` + `MapArtData` pair and their generators), then `src/ui/main.ts` and `src/game/codec.ts`, which name `STANDARD_MAP`/`STANDARD_ART` directly. Honestly: this is not a drop-in yet — `Power` in `src/engine/types.ts` and the palettes in `src/ui/colors.ts` are fixed to the seven standard powers, so a map with different powers needs those opened up first |
 | Fix a UI bug | the module that owns it, per the [UI table](#ui-srcui): order entry → `src/ui/order-entry.ts`, panel layout → `panel.ts`, top bar/history/toasts → `hud.ts`, dialogs → `modals.ts`, saved games and sharing → `session.ts`, phone pan/zoom → `gestures.ts`, the board → `board.ts` / `board-map.ts` / `board-glyphs.ts` / `board-export.ts`, click-to-order → `interaction.ts`, styling → `web/style.css`. `src/ui/main.ts` is the shell: session state and wiring only |
 | Change order parsing or resolution | `src/engine/parse.ts` / `src/engine/resolve.ts`; tests in `test/engine/`, and the DATC suite must stay green |

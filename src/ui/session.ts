@@ -24,7 +24,8 @@ import {
   type OrderDraft,
   type SavedGame,
 } from './persist.js';
-import { reportText } from './report.js';
+import type { HistoryView } from './history-views.js';
+import { lifeReportText, reportText } from './report.js';
 import { RULES_TITLE } from './rules-text.js';
 import { el } from './svg.js';
 
@@ -245,10 +246,20 @@ export function moreMenu(app: App): void {
 
 // ---------- sharing: report text, share links, board images ----------
 
-export function copyResults(app: App, record: PhaseRecord): void {
+/**
+ * Copy the report for one history entry, or for the phase just adjudicated when `view`
+ * is null. A Life entry reports its births and deaths and nothing else — its orders
+ * belong to the phase entry beside it, which reports them without the Life list.
+ */
+export function copyResults(app: App, view: HistoryView | null): void {
   app.flushText();
-  const label = nextPhaseLabel(record.before);
-  const text = reportText(label, record);
+  const record = view?.record ?? app.history[app.history.length - 1];
+  if (!record) return;
+  const label = view?.label ?? nextPhaseLabel(record.before);
+  const text =
+    view?.kind === 'life'
+      ? lifeReportText(label, record.life ?? { units: [], events: [], pending: [] })
+      : reportText(label, record, view ? null : undefined);
   const fallback = () => showCopyText(app, `${label} — results`, text);
   const p = navigator.clipboard?.writeText(text);
   if (!p) return fallback();
@@ -281,8 +292,13 @@ export async function copyShareLink(app: App): Promise<void> {
 }
 
 export function filenameStem(app: App): string {
-  const t = (app.title || 'conway-diplomacy').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-  const s = app.viewedState();
+  const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  const t = slug(app.title || 'conway-diplomacy');
+  // A history entry names itself — "…-summer-1901-life" — because two entries can share
+  // one board's season and phase, and the file is the only label the image keeps.
+  const view = app.viewedView();
+  if (view) return `${t}-${slug(view.label)}`;
+  const s = app.state;
   return `${t}-${s.season.charAt(0)}${s.year}${s.phase.charAt(0)}`;
 }
 
@@ -317,12 +333,15 @@ export async function copyBoardPng(app: App): Promise<void> {
   });
 }
 
-/** Run `fn` with the board rendered as it should be exported: full extent + caption. */
+/**
+ * Run `fn` with the board rendered as it should be exported: full extent, caption, and
+ * the arrows/Life marks included or left off per the HUD's Orders toggle.
+ */
 async function withExportBoard(app: App, fn: () => Promise<void>): Promise<void> {
   app.flushText();
   const vb = app.board.svg.getAttribute('viewBox');
   app.board.resetViewBox();
-  app.render({ caption: true });
+  app.render({ caption: true, marks: app.exportMarks });
   try {
     await fn();
   } catch (e) {

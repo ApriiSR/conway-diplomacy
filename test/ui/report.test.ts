@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { reportText, resultGroups } from '../../src/ui/report';
+import { lifeReportText, reportText, resultGroups } from '../../src/ui/report';
 import type { PhaseRecord, Unit } from '../../src/engine/types';
 
 const U = (s: string): Unit => {
@@ -55,5 +55,32 @@ describe('spawn-choice reporting', () => {
       before: { ...summer.before, season: 'WINTER', phase: 'ADJUSTMENT' },
     };
     expect(reportText('x', winter)).toContain('Winter 1901 Life:');
+  });
+
+  // The history lists a phase and its Life step separately, so each entry's report is
+  // its own half — otherwise copying both entries pastes the Life list twice.
+  it('drops the Life section when the caller asks for the orders alone', () => {
+    const record = spawnRecord();
+    record.life = {
+      units: [],
+      events: [{ kind: 'death', province: 'tyr', unit: U('A ITALY tyr'), power: 'ITALY', neighbours: 1 }],
+      pending: [],
+    };
+    const text = reportText('Summer 1901 Spawn Choice', record, null);
+    expect(text).toContain('Build F EDI');
+    expect(text).not.toContain('Life');
+    expect(text).not.toContain('loneliness');
+  });
+
+  it('reports a Life entry as its births and deaths alone', () => {
+    const text = lifeReportText('Summer 1901 Life', {
+      units: [],
+      events: [{ kind: 'death', province: 'tyr', unit: U('A ITALY tyr'), power: 'ITALY', neighbours: 1 }],
+      pending: [],
+    });
+    expect(text).toBe('Summer 1901 Life\n\nTYR: dies of loneliness (1 neighbour)\n');
+    expect(lifeReportText('Winter 1901 Life', { units: [], events: [], pending: [] })).toContain(
+      'No births or deaths.',
+    );
   });
 });

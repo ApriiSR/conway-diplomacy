@@ -66,11 +66,19 @@ function mkState(base: GameState, patch: Patch): GameState {
   return state;
 }
 
-function runLife(state: GameState, resolved: GameState, map: MapData): { life: LifeResult; after: GameState } {
+function runLife(
+  state: GameState,
+  resolved: GameState,
+  map: MapData,
+): { life: LifeResult; preLifeUnits: Unit[]; after: GameState } {
   const life = lifeStep(resolved.units, map);
+  // The board the step ran on, kept on the record: history draws the Life marks on it
+  // rather than on the board they produced, so a unit that died is still there under its ✕.
+  const preLifeUnits = resolved.units;
   if (life.pending.length > 0) {
     return {
       life,
+      preLifeUnits,
       after: mkState(resolved, {
         // The post-Spring Life step happens in Summer, so the state the GM waits in is a
         // Summer one; the Winter step stays inside Winter.
@@ -83,10 +91,18 @@ function runLife(state: GameState, resolved: GameState, map: MapData): { life: L
     };
   }
   if (state.season === 'SPRING') {
-    return { life, after: mkState(resolved, { season: 'FALL', year: state.year, phase: 'MOVEMENT', units: life.units }) };
+    return {
+      life,
+      preLifeUnits,
+      after: mkState(resolved, { season: 'FALL', year: state.year, phase: 'MOVEMENT', units: life.units }),
+    };
   }
   // WINTER life step with nothing pending: roll into next year's Spring.
-  return { life, after: mkState(resolved, { season: 'SPRING', year: state.year + 1, phase: 'MOVEMENT', units: life.units }) };
+  return {
+    life,
+    preLifeUnits,
+    after: mkState(resolved, { season: 'SPRING', year: state.year + 1, phase: 'MOVEMENT', units: life.units }),
+  };
 }
 
 /** Handles the state after a MOVEMENT or RETREAT resolution with nothing left dislodged. */
@@ -107,8 +123,8 @@ function afterMovementOrRetreat(
     const after = mkState(resolved, { season: 'FALL', year: before.year, phase: 'MOVEMENT' });
     return { before, orders, results, after };
   }
-  const { life, after } = runLife(before, resolved, map);
-  return { before, orders, results, life, after };
+  const { life, preLifeUnits, after } = runLife(before, resolved, map);
+  return { before, orders, results, life, preLifeUnits, after };
 }
 
 export function advance(state: GameState, orders: Order[], map: MapData): PhaseRecord {
@@ -131,8 +147,8 @@ export function advance(state: GameState, orders: Order[], map: MapData): PhaseR
         const after = mkState(next, { season: 'SPRING', year: state.year + 1, phase: 'MOVEMENT' });
         return { before: state, orders, results, after };
       }
-      const { life, after } = runLife(state, next, map);
-      return { before: state, orders, results, life, after };
+      const { life, preLifeUnits, after } = runLife(state, next, map);
+      return { before: state, orders, results, life, preLifeUnits, after };
     }
     case 'SPAWN_CHOICE':
       throw new Error('advance(): state is in SPAWN_CHOICE; call resolveSpawnChoices() instead');
@@ -233,7 +249,7 @@ export function resolveSpawnChoices(state: GameState, choices: SpawnChoice[], ma
       : mkState(state, { season: 'FALL', year: state.year, phase: 'MOVEMENT', units });
 
   const life: LifeResult = { units, events: resolvedEvents, pending: [] };
-  return { before: state, orders, results, life, after };
+  return { before: state, orders, results, life, preLifeUnits: state.units, after };
 }
 
 const PHASE_LABEL: Record<PhaseKind, string> = {
